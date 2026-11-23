@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>X4 – مولّد هاش كلمة المرور</title>
+<style>
+  body{margin:0;padding:18px;background:#02040b;color:#e8f3ff;font-family:system-ui,sans-serif;line-height:1.6}
+  h1{font-size:18px;margin:0 0 12px}
+  label{display:block;margin:12px 0 4px;font-size:13px;color:#9fd8ff}
+  input{width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid #2a5da8;background:#08142c;color:#fff;font-size:16px}
+  button{margin-top:14px;padding:13px 18px;border:0;border-radius:12px;background:#2072ff;color:#fff;font-size:16px;font-weight:700;width:100%}
+  pre{white-space:pre-wrap;word-break:break-all;background:#08142c;border:1px solid #2a5da8;border-radius:10px;padding:12px;font-size:12px;direction:ltr;text-align:left}
+  small{color:#8fb4dd}
+</style>
+</head>
+<body>
+<h1>مولّد ملف gate.json (كلمة المرور)</h1>
+<small>الحساب كله بيتم على جهازك. كلمة المرور نفسها مش بتتخزن ولا بتتبعت لأي مكان، بيتولّد منها هاش مش ممكن يتعكس بسهولة.</small>
+<label>كلمة المرور الجديدة</label>
+<input id="pw" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+<label>رابط Get Pass (اختياري)</label>
+<input id="g" type="url" dir="ltr" placeholder="https://t.me/...">
+<label>رابط How To Get Pass (اختياري)</label>
+<input id="h" type="url" dir="ltr" placeholder="https://youtu.be/...">
+<button id="go">توليد</button>
+<p id="st"></p>
+<pre id="out"></pre>
+<script>
+const b64 = u => btoa(String.fromCharCode(...u));
+document.getElementById('go').onclick = async () => {
+  const st = document.getElementById('st'), out = document.getElementById('out');
+  const pw = document.getElementById('pw').value.trim();
+  if (!pw) { st.textContent = 'اكتب كلمة المرور الأول'; return; }
+  if (!window.crypto || !crypto.subtle) { st.textContent = 'المتصفح ده مش بيدعم WebCrypto، افتح الصفحة من Chrome.'; return; }
+  st.textContent = 'جارٍ التوليد…';
+  const salt = crypto.getRandomValues(new Uint8Array(16)), iter = 120000;
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, key, 256);
+  const j = { v: 1, salt: b64(salt), iter, hash: b64(new Uint8Array(bits)),
+    getPass: { label: 'Get Pass', url: document.getElementById('g').value.trim() },
+    howToGetPass: { label: 'How To Get Pass', url: document.getElementById('h').value.trim() } };
+  out.textContent = JSON.stringify(j, null, 2);
+  st.textContent = 'تمام. انسخ الكود ده وحطه مكان محتوى data/gate.json في المستودع.';
+  try { await navigator.clipboard.writeText(out.textContent); st.textContent += ' (اتنسخ تلقائيًا)'; } catch (e) {}
+};
+</script>
+</body>
+</html>

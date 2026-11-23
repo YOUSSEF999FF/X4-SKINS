@@ -1,0 +1,14 @@
+{
+  "v": 1,
+  "salt": "I7lpDypgi+Qgw2gKXkhTgg==",
+  "iter": 120000,
+  "hash": "8d3NSUtmEB3D+9c0GIhd+fWcpMvatix7TP/4cJuUDho=",
+  "getPass": {
+    "label": "Get Pass",
+    "url": ""
+  },
+  "howToGetPass": {
+    "label": "How To Get Pass",
+    "url": ""
+  }
+}

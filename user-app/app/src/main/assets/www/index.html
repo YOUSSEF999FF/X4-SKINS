@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#02040b">
+<title>X4 SKINS 18 MAX</title>
+<link rel="stylesheet" href="css/app.css">
+<script src="app-config.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================== PAGE 1 : cinematic intro ============================== -->
+  <section id="screen-intro" class="screen active" aria-label="X4 SKINS 18 MAX">
+    <canvas id="intro-bg"></canvas>
+    <canvas id="intro-fx"></canvas>
+    <div id="intro-logo-pos">
+      <div id="intro-logo" aria-hidden="true">
+        <span class="l-back">X4 SKINS</span>
+        <span class="l-front">X4 SKINS</span>
+        <span class="l-shine">X4 SKINS</span>
+      </div>
+    </div>
+    <div id="intro-flash"></div>
+    <div id="intro-fade"></div>
+    <button id="intro-skip" class="skip" type="button"><span data-i18n="skip">Skip</span></button>
+  </section>
+
+  <!-- ============================== PAGE 2 : home (video background) ============================== -->
+  <section id="screen-home" class="screen" aria-label="Home">
+    <video id="bg-video" muted loop playsinline preload="auto" disablepictureinpicture></video>
+    <canvas id="bg-canvas"></canvas>
+    <div class="home-shade"></div>
+
+    <div class="home-brand" aria-hidden="true">
+      <div class="brand-top">X4 SKINS</div>
+      <div class="brand-pill">18 MAX</div>
+    </div>
+
+    <div id="main-actions" class="actions">
+      <button id="btn-start" class="btn-main b-start" type="button" data-go="start">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 4.8v14.4a.8.8 0 0 0 1.2.7l12-7.2a.8.8 0 0 0 0-1.4l-12-7.2a.8.8 0 0 0-1.2.7z" fill="currentColor"/></svg>
+        <span class="lbl">START</span>
+      </button>
+      <button id="btn-explain" class="btn-main b-explain" type="button" data-go="explain">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12.5" rx="3.2"/><path d="M10.2 8.4l4.6 2.35-4.6 2.35z" fill="currentColor"/><path d="M8 20.5h8"/></svg>
+        <span class="lbl">Explanations</span>
+      </button>
+      <button id="btn-info" class="btn-main b-info" type="button" data-go="info">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.2M12 7.7v.01"/></svg>
+        <span class="lbl">AHM X INFO</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================== PAGES 3-5 : placeholders for the next phases (static background) ============================== -->
+  <section id="screen-start" class="screen sub" aria-label="START">
+    <header class="sub-head">
+      <button class="back" type="button" data-back data-i18n-aria="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h1>START</h1>
+    </header>
+    <div class="soon"><div class="soon-mark">18 MAX</div><p data-i18n="soon.title"></p></div>
+  </section>
+
+  <section id="screen-explain" class="screen sub" aria-label="Explanations">
+    <header class="sub-head">
+      <button class="back" type="button" data-back data-i18n-aria="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h1>Explanations</h1>
+    </header>
+    <div class="soon"><div class="soon-mark">▶</div><p data-i18n="soon.title"></p></div>
+  </section>
+
+  <section id="screen-info" class="screen sub" aria-label="AHM X INFO">
+    <header class="sub-head">
+      <button class="back" type="button" data-back data-i18n-aria="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h1>AHM X INFO</h1>
+    </header>
+    <div class="soon"><div class="soon-mark">i</div><p data-i18n="soon.title"></p></div>
+  </section>
+
+  <!-- page transition light sweep -->
+  <div id="tx-sweep"></div>
+
+  <!-- shield / emblem effect layer -->
+  <div id="emblem-layer" aria-hidden="true">
+    <div class="em-frost"></div>
+    <div class="em-shape">
+      <div class="em-glass"><span class="em-sheen"></span></div>
+      <svg class="em-rim" viewBox="0 0 100 120"></svg>
+      <div class="em-core"></div>
+    </div>
+  </div>
+
+  <!-- ============================== password dialog ============================== -->
+  <div id="gate" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="panel">
+      <div class="panel-glass"><span class="sheen"></span></div>
+      <div class="panel-body">
+        <div class="panel-emblem" id="gate-emblem"></div>
+        <h2 data-i18n="gate.title"></h2>
+        <p class="sub" data-i18n="gate.sub"></p>
+        <form id="gate-form" autocomplete="off" novalidate>
+          <div class="field" id="gate-field">
+            <input id="gate-input" type="password" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" data-i18n-ph="gate.placeholder">
+            <button id="gate-eye" class="eye" type="button" tabindex="-1" data-i18n-aria="gate.show">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="msg" id="gate-msg" role="alert" aria-live="polite"></div>
+          <button id="gate-confirm" class="btn btn-primary" type="submit"><span data-i18n="gate.confirm"></span></button>
+        </form>
+        <div class="row-btns">
+          <button id="gate-getpass" class="btn btn-ghost" type="button"><span class="lbl">Get Pass</span></button>
+          <button id="gate-howto" class="btn btn-ghost" type="button"><span class="lbl">How To Get Pass</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== update dialog ============================== -->
+  <div id="update" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="panel">
+      <div class="panel-glass"><span class="sheen"></span></div>
+      <div class="panel-body">
+        <div class="panel-emblem" id="up-emblem"></div>
+        <h2 id="up-title"></h2>
+        <p class="sub" id="up-msg"></p>
+        <div class="ver" id="up-ver" dir="ltr"></div>
+        <button id="up-go" class="btn btn-primary" type="button"><span class="lbl" id="up-go-lbl"></span></button>
+        <button id="up-later" class="btn btn-ghost" type="button"><span data-i18n="update.later"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== no-internet dialog (always on top) ============================== -->
+  <div id="netdlg" class="modal" role="alertdialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="panel">
+      <div class="panel-glass"><span class="sheen"></span></div>
+      <div class="panel-body">
+        <svg class="net-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" aria-hidden="true">
+          <path d="M8 24c13.5-12 34.5-12 48 0"/><path d="M16 33c9-8 23-8 32 0"/><path d="M24 42c5-4.2 11-4.2 16 0"/><circle cx="32" cy="50" r="2.2" fill="currentColor"/><path d="M10 8l44 48" stroke="#ff7b8f"/>
+        </svg>
+        <h2 data-i18n="net.title"></h2>
+        <p class="sub" data-i18n="net.msg"></p>
+        <div class="msg" id="net-status" role="status" aria-live="polite"></div>
+        <button id="net-retry" class="btn btn-primary" type="button"><span id="net-retry-lbl" data-i18n="net.retry"></span></button>
+        <div class="lang-bar" id="net-langs" role="group" aria-label="Language"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="js/util.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/config.js"></script>
+<script src="js/net.js"></script>
+<script src="js/bgfx.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/emblem.js"></script>
+<script src="js/intro.js"></script>
+<script src="js/gate.js"></script>
+<script src="js/update.js"></script>
+<script src="js/router.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

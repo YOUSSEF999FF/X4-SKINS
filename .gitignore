@@ -1,0 +1,13 @@
+# build output
+build/
+.gradle/
+local.properties
+*.apk
+*.aab
+.idea/
+*.iml
+# never commit unencrypted keys
+*.jks
+*.keystore
+# generated at build time
+user-app/app/src/main/assets/www/data/

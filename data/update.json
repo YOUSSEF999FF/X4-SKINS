@@ -1,0 +1,24 @@
+{
+  "latestVersion": "1.0.0",
+  "force": false,
+  "title": {
+    "ar": "تحديث جديد متاح",
+    "en": "New update available",
+    "es": "Nueva actualización disponible",
+    "vi": "Có bản cập nhật mới",
+    "hi": "नया अपडेट उपलब्ध है",
+    "pt": "Nova atualização disponível"
+  },
+  "description": {
+    "ar": "يتوفر إصدار أحدث من التطبيق. حدّث الآن للحصول على آخر المميزات.",
+    "en": "A newer version of the app is available. Update now to get the latest features.",
+    "es": "Hay una versión más reciente de la aplicación. Actualiza para obtener las últimas funciones.",
+    "vi": "Đã có phiên bản mới hơn của ứng dụng. Hãy cập nhật để dùng các tính năng mới nhất.",
+    "hi": "ऐप का नया संस्करण उपलब्ध है। नई सुविधाओं के लिए अभी अपडेट करें।",
+    "pt": "Há uma versão mais recente do app. Atualize agora para ter os recursos mais recentes."
+  },
+  "button": {
+    "label": { "ar": "تحديث الآن", "en": "Update now", "es": "Actualizar ahora", "vi": "Cập nhật ngay", "hi": "अभी अपडेट करें", "pt": "Atualizar agora" },
+    "url": ""
+  }
+}

@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Values come from the GitHub Actions workflow (see .github/workflows/build-user-app.yml)
+def vName = System.getenv('VERSION_NAME') ?: '1.0.0'
+def vCode = (System.getenv('VERSION_CODE') ?: '1') as int
+def ksPath = System.getenv('KEYSTORE_PATH')
+def hasKeystore = ksPath != null && file(ksPath).exists()
+
+android {
+    namespace 'com.ahmx.x4skins'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.ahmx.x4skins18max'
+        minSdk 26
+        targetSdk 34
+        versionCode vCode
+        versionName vName
+    }
+
+    signingConfigs {
+        release {
+            if (hasKeystore) {
+                storeFile file(ksPath)
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS') ?: 'x4key'
+                keyPassword System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            // no key configured -> temporary debug key (installs fine, but cannot update an app signed with another key)
+            signingConfig hasKeystore ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    androidResources {
+        noCompress 'mp4'          // the background video is streamed straight from the APK
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.11.0'
+}
