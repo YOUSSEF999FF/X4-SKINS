@@ -1,0 +1,128 @@
+name: Build user app (APK)
+
+on:
+  push:
+    paths:
+      - 'user-app/**'
+      - 'x4app.zip'
+      - '.github/workflows/build-user-app.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-user-app
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      # First-time setup from a phone: upload x4app.zip to the repo root and this step unpacks it.
+      - name: Unpack x4app.zip (if present)
+        run: |
+          if [ -f x4app.zip ]; then
+            echo "Unpacking x4app.zip"
+            unzip -o -q x4app.zip -x '.github/*'
+            rm -f x4app.zip
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "Unpack x4app.zip [skip ci]" || true
+            git push || echo "::warning::could not push the unpacked files"
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+
+      - name: Prepare data, version and app-config
+        run: |
+          set -e
+          VERSION_NAME="$(tr -d ' \r\n' < user-app/VERSION)"
+          [ -n "$VERSION_NAME" ] || VERSION_NAME=1.0.0
+          echo "VERSION_NAME=$VERSION_NAME" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+          BRANCH="${{ github.event.repository.default_branch }}"
+          WWW=user-app/app/src/main/assets/www
+          mkdir -p "$WWW/data"
+          cp data/*.json data/ping.txt "$WWW/data/"
+          printf 'window.APP_CONFIG = { dataBase: "https://raw.githubusercontent.com/%s/%s/data/", appVersionFallback: "%s" };\n' "$GITHUB_REPOSITORY" "$BRANCH" "$VERSION_NAME" > "$WWW/app-config.js"
+          cat "$WWW/app-config.js"
+
+      # Signing key. Add ONE repository secret named SIGNING_PASSPHRASE (16+ characters) and the key is created
+      # once, stored encrypted in signing/release.jks.enc, and reused for every build so updates install over old versions.
+      - name: Signing key
+        env:
+          PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
+        run: |
+          if [ -z "$PASSPHRASE" ]; then
+            echo "::warning::SIGNING_PASSPHRASE secret is not set - using a temporary debug key (the APK installs, but cannot update an app signed with a different key)"
+            exit 0
+          fi
+          if [ "${#PASSPHRASE}" -lt 16 ]; then
+            echo "::warning::SIGNING_PASSPHRASE is shorter than 16 characters - ignored, using a temporary debug key"
+            exit 0
+          fi
+          mkdir -p signing
+          JKS="$RUNNER_TEMP/release.jks"
+          if [ -f signing/release.jks.enc ]; then
+            openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -pass env:PASSPHRASE -in signing/release.jks.enc -out "$JKS" \
+              || { echo "::error::SIGNING_PASSPHRASE does not match the stored signing key"; exit 1; }
+          else
+            keytool -genkeypair -keystore "$JKS" -storetype PKCS12 -alias x4key -keyalg RSA -keysize 2048 -validity 36500 \
+              -storepass "$PASSPHRASE" -keypass "$PASSPHRASE" -dname "CN=X4 SKINS 18 MAX, O=AHM X, C=EG"
+            openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt -pass env:PASSPHRASE -in "$JKS" -out signing/release.jks.enc
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add signing/release.jks.enc
+            git commit -m "Add encrypted signing key [skip ci]"
+            git push || echo "::warning::could not store the signing key in the repo"
+          fi
+          echo "KEYSTORE_PATH=$JKS" >> "$GITHUB_ENV"
+
+      - name: Build release APK
+        working-directory: user-app
+        env:
+          KEY_ALIAS: x4key
+          KEYSTORE_PASSWORD: ${{ secrets.SIGNING_PASSPHRASE }}
+          KEY_PASSWORD: ${{ secrets.SIGNING_PASSPHRASE }}
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Collect APK
+        run: |
+          set -e
+          mkdir -p out
+          cp user-app/app/build/outputs/apk/release/app-release.apk "out/X4-SKINS-18-MAX-v${VERSION_NAME}.apk"
+          cp user-app/app/build/outputs/apk/release/app-release.apk "out/X4-SKINS-18-MAX.apk"
+          {
+            echo "### APK ready (v${VERSION_NAME})"
+            echo ""
+            echo "Download: https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/X4-SKINS-18-MAX.apk"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: X4-SKINS-18-MAX-apk
+          path: out/*.apk
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION_NAME }}
+          name: X4 SKINS 18 MAX v${{ env.VERSION_NAME }}
+          make_latest: true
+          files: |
+            out/X4-SKINS-18-MAX.apk
+            out/X4-SKINS-18-MAX-v${{ env.VERSION_NAME }}.apk
