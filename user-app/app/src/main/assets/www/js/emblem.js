@@ -12,6 +12,12 @@
       core: '<rect x="43" y="40" width="14" height="36" rx="4"/>',
       tabs: '<rect x="44" y="1" width="12" height="9" rx="3" fill="#7fd0ff"/><rect x="44" y="110" width="12" height="9" rx="3" fill="#7fd0ff"/>'
     },
+    max18: {
+      path: 'M22 12 H78 L95 29 V91 L78 108 H22 L5 91 V29 Z',
+      core: '<text x="50" y="68" text-anchor="middle" font-family="Archivo Black, Impact, sans-serif" font-size="44">18</text>' +
+            '<text x="50" y="91" text-anchor="middle" font-family="Archivo Black, Impact, sans-serif" font-size="18" letter-spacing="3">MAX</text>',
+      tabs: '<rect x="40" y="5" width="20" height="5" rx="2.5" fill="#7fd0ff"/><rect x="40" y="110" width="20" height="5" rx="2.5" fill="#7fd0ff"/>'
+    },
     update: {
       path: 'M50 6 L90 30 V84 L50 114 L10 84 V30 Z',
       core: '<path d="M50 34 L69 58 H56 V86 H44 V58 H31 Z"/>',

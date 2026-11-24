@@ -177,10 +177,68 @@
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { btn.addEventListener(n, up, { passive: true }); });
   }
 
+
+  /* ---------------------------------------------------------------- lightning "disappear" effect
+     Bolts crackle across the element while it flashes white-blue and vanishes. Resolves when it is gone. */
+  function zap(el, o) {
+    o = o || {};
+    var r = el.getBoundingClientRect(), pad = 36, W = r.width + pad * 2, H = r.height + pad * 2;
+    var cv = document.createElement('canvas'), dpr = X4.perf.low ? 1 : X4.perf.dpr;
+    cv.width = Math.max(1, Math.round(W * dpr)); cv.height = Math.max(1, Math.round(H * dpr));
+    cv.style.cssText = 'position:fixed;left:' + (r.left - pad) + 'px;top:' + (r.top - pad) + 'px;width:' + W + 'px;height:' + H + 'px;pointer-events:none;z-index:' + (o.z || 900) + ';';
+    document.body.appendChild(cv);
+    var ctx = cv.getContext('2d'), dur = o.duration || 560, per = perimeter(pad, r.width, r.height, o.radius || 24);
+    var count = X4.perf.low ? 4 : 8, bolts = [], t0 = performance.now(), last = -999, raf = 0, done;
+
+    function make() {
+      bolts = [];
+      for (var k = 0; k < count; k++) {
+        var a = per[Math.floor(Math.random() * per.length)];
+        var b = Math.random() < 0.55 ? per[Math.floor(Math.random() * per.length)] : [W / 2 + (Math.random() - 0.5) * W * 0.5, H / 2 + (Math.random() - 0.5) * H * 0.5];
+        bolts.push(bolt(a[0], a[1], b[0], b[1], 26, 4));
+        if (Math.random() < 0.6) {                          // a short outward spark from the rim
+          var q = per[Math.floor(Math.random() * per.length)], dx = q[0] - W / 2, dy = q[1] - H / 2, l = Math.hypot(dx, dy) || 1, len = 10 + Math.random() * pad;
+          bolts.push(bolt(q[0], q[1], q[0] + dx / l * len, q[1] + dy / l * len, 8, 3));
+        }
+      }
+    }
+    var anim = el.animate([
+      { opacity: 1, filter: 'brightness(1)', transform: 'scale(1)' },
+      { opacity: 1, filter: 'brightness(2.8) saturate(1.4)', transform: 'scale(1.025)', offset: 0.34 },
+      { opacity: 0, filter: 'brightness(3.4) blur(7px)', transform: 'scale(1.07)' }
+    ], { duration: dur, easing: 'ease-in', fill: 'forwards' });
+
+    done = new Promise(function (res) {
+      (function frame(now) {
+        var u = Math.min(1, (now - t0) / dur);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        if (now - last > 48) { make(); last = now; }
+        var amp = Math.sin(Math.PI * Math.min(1, u * 1.15));
+        ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.shadowColor = 'rgba(80,190,255,1)'; ctx.shadowBlur = X4.perf.low ? 5 : 14;
+        for (var i = 0; i < bolts.length; i++) {
+          ctx.strokeStyle = 'rgba(110,200,255,' + (0.85 * amp) + ')'; ctx.lineWidth = 2.6; strokePts(ctx, bolts[i]);
+          ctx.strokeStyle = 'rgba(240,250,255,' + amp + ')'; ctx.lineWidth = 1.1; strokePts(ctx, bolts[i]);
+        }
+        ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+        if (u < 1) raf = requestAnimationFrame(frame); else res();
+      })(t0);
+    });
+    return done.then(function () {
+      if (cv.parentNode) cv.parentNode.removeChild(cv);
+      if (o.hide) { try { o.hide(); } catch (e) { console.error(e); } }   // hide for real, then drop the animation
+      try { anim.cancel(); } catch (e) {}
+    });
+  }
+
   /* ---------------------------------------------------------------- cinematic dialog in / out */
+  function hitRefresh() { if (X4.hit) X4.hit.refresh(); }
+
   function dialogIn(modal, panel) {
     modal.classList.add('open');
     modal.classList.add('in');
+    hitRefresh();
     var a = panel.animate([
       { transform: 'perspective(900px) translateZ(-420px) rotateX(22deg) scale(.55)', opacity: 0, filter: 'blur(16px) brightness(2.2)' },
       { transform: 'perspective(900px) translateZ(46px) rotateX(-3deg) scale(1.05)', opacity: 1, filter: 'blur(2px) brightness(1.45)', offset: 0.6 },
@@ -203,8 +261,15 @@
     return a.finished.catch(function () {}).then(function () {
       modal.classList.remove('open');
       try { a.cancel(); } catch (e) {}
+      hitRefresh();
     });
   }
 
-  X4.fx = { bolt: bolt, lightningBorder: lightningBorder, pressable: pressable, dialogIn: dialogIn, dialogOut: dialogOut };
+  /* dialog leaves with the lightning effect (used by the download dialog) */
+  function dialogZap(modal, panel) {
+    modal.classList.remove('in');
+    return zap(panel, { radius: 26, hide: function () { modal.classList.remove('open'); } }).then(hitRefresh);
+  }
+
+  X4.fx = { dialogZap: dialogZap, bolt: bolt, strokePts: strokePts, perimeter: perimeter, lightningBorder: lightningBorder, pressable: pressable, zap: zap, dialogIn: dialogIn, dialogOut: dialogOut };
 })();

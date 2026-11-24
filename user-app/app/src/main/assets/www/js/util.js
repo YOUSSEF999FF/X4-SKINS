@@ -97,8 +97,31 @@
       });
     }
 
+    /* events coming from the Android shell (sites, downloads, "leaving the app" requests) */
+    var ev = new X4.Emitter();
+    function parse(j) { try { return typeof j === 'string' ? JSON.parse(j) : j; } catch (e) { return null; } }
+    window.__native_onSite = function (j) { var o = parse(j); if (o) ev.emit('site', o); };
+    window.__native_onDl = function (j) { var o = parse(j); if (o) ev.emit('dl', o); };
+    window.__native_onLeave = function (url) { ev.emit('leave', url); };
+
     return {
       has: !!B,
+      hasSites: !!(B && B.openSite),
+      ev: ev,
+      site: {
+        open: function (slot, url, allowed) {
+          try { B.openSite(slot | 0, String(url), JSON.stringify(allowed || [])); return true; } catch (e) { return false; }
+        },
+        close: function () { try { if (B && B.closeSite) B.closeSite(); } catch (e) {} },
+        cancel: function () { try { if (B && B.cancelOpen) B.cancelOpen(); } catch (e) {} },
+        back: function () { try { return !!(B && B.siteBack && B.siteBack()); } catch (e) { return false; } }
+      },
+      /* which parts of the screen belong to our UI while a site is open (everything else touches the site) */
+      setHit: function (all, rects) { try { if (B && B.setHit) B.setHit(!!all, JSON.stringify(rects || [])); } catch (e) {} },
+      leaveTo: function (url) { try { if (B && B.leaveTo) B.leaveTo(String(url)); else window.open(url, '_blank'); } catch (e) {} },
+      leaveCancel: function () { try { if (B && B.leaveCancel) B.leaveCancel(); } catch (e) {} },
+      cancelDownload: function (id) { try { if (B && B.cancelDownload) B.cancelDownload(id | 0); } catch (e) {} },
+      openFile: function (ref, mime) { try { return !!(B && B.openFile && B.openFile(String(ref || ''), String(mime || ''))); } catch (e) { return false; } },
       probe: probe,
       openExternal: function (url) {
         if (!url) return false;

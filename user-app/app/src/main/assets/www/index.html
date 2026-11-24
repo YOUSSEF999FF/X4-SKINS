@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#02040b">
 <title>X4 SKINS 18 MAX</title>
 <link rel="stylesheet" href="css/app.css">
@@ -61,7 +60,6 @@
       <button class="back" type="button" data-back data-i18n-aria="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h1>START</h1>
     </header>
-    <div class="soon"><div class="soon-mark">18 MAX</div><p data-i18n="soon.title"></p></div>
   </section>
 
   <section id="screen-explain" class="screen sub" aria-label="Explanations">
@@ -136,6 +134,73 @@
     </div>
   </div>
 
+  <!-- ============================== START : list of links (18 MAX emblem) ============================== -->
+  <div id="start-dlg" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="panel">
+      <div class="panel-glass"><span class="sheen"></span></div>
+      <div class="panel-body">
+        <div class="panel-emblem" id="start-emblem"></div>
+        <h2 id="start-title"></h2>
+        <p class="sub" id="start-sub"></p>
+        <div id="start-list" class="link-list"></div>
+        <button id="start-close" class="btn btn-ghost" type="button"><span class="lbl"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating 18 MAX button (visible while a site is open) -->
+  <button id="fab-max" type="button" data-hit data-i18n-aria="fab.aria"></button>
+
+  <!-- ============================== download dialog + bubbles ============================== -->
+  <div id="dl-dlg" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="panel dl-panel">
+      <div class="panel-glass"><span class="sheen"></span></div>
+      <div class="panel-body">
+        <h2 id="dl-title"></h2>
+        <div class="dl-ring" id="dl-ring">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs><linearGradient id="dl-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6f8ff"/><stop offset=".5" stop-color="#4db8ff"/><stop offset="1" stop-color="#1a6dff"/></linearGradient></defs>
+            <circle class="dl-track" cx="100" cy="100" r="82"/>
+            <g class="dl-spin" id="dl-spin"><circle class="dl-prog" id="dl-prog" cx="100" cy="100" r="82" transform="rotate(-90 100 100)"/></g>
+          </svg>
+          <canvas id="dl-bolts"></canvas>
+          <div class="dl-center"><div class="dl-pct" id="dl-pct" dir="ltr">0%</div><div class="dl-speed" id="dl-speed" dir="ltr"></div></div>
+        </div>
+        <div class="dl-name" id="dl-name" dir="auto"></div>
+        <div class="dl-size" id="dl-size" dir="ltr"></div>
+        <div class="dl-where" id="dl-where"></div>
+        <div class="dl-btns">
+          <button id="dl-open" class="btn btn-primary" type="button" hidden><span class="lbl"></span></button>
+          <div class="row-btns">
+            <button id="dl-cancel" class="btn btn-ghost" type="button"><span class="lbl"></span></button>
+            <button id="dl-hide" class="btn btn-ghost" type="button"><span class="lbl"></span></button>
+            <button id="dl-close" class="btn btn-ghost" type="button" hidden><span class="lbl"></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="dl-chips"></div>
+
+  <!-- ============================== "leaving the app" notice (webview2) ============================== -->
+  <div id="leave-dlg" class="modal" role="alertdialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="panel">
+      <div class="panel-glass"><span class="sheen"></span></div>
+      <div class="panel-body">
+        <svg class="net-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M26 12H14a4 4 0 0 0-4 4v34a4 4 0 0 0 4 4h34a4 4 0 0 0 4-4V38"/><path d="M38 10h16v16"/><path d="M54 10 30 34"/>
+        </svg>
+        <h2 id="leave-title"></h2>
+        <p class="sub" id="leave-msg"></p>
+        <div class="leave-host" id="leave-host" dir="ltr"></div>
+        <button id="leave-ok" class="btn btn-primary" type="button"><span class="lbl"></span></button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============================== no-internet dialog (always on top) ============================== -->
   <div id="netdlg" class="modal" role="alertdialog" aria-modal="true" aria-hidden="true">
     <div class="modal-backdrop"></div>
@@ -164,9 +229,13 @@
 <script src="js/bgfx.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/emblem.js"></script>
+<script src="js/hit.js"></script>
 <script src="js/intro.js"></script>
 <script src="js/gate.js"></script>
 <script src="js/update.js"></script>
+<script src="js/start.js"></script>
+<script src="js/leave.js"></script>
+<script src="js/dl.js"></script>
 <script src="js/router.js"></script>
 <script src="js/app.js"></script>
 </body>

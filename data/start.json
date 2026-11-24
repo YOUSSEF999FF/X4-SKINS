@@ -1,0 +1,21 @@
+{
+  "_help": "قائمة الروابط اللي بتظهر في صفحة START. كل رابط: title (نص أو بالـ6 لغات) و subtitle اختياري و url و view (1 = webview1 ، 2 = webview2) و allowed (اختياري: دومينات مسموحة في webview2 غير دومين الرابط نفسه) و enabled (false لإخفاء الرابط).",
+  "version": 1,
+  "items": [
+    {
+      "id": "site-1",
+      "title": { "ar": "الموقع الرسمي", "en": "Official Website", "es": "Sitio oficial", "vi": "Trang chính thức", "hi": "आधिकारिक वेबसाइट", "pt": "Site oficial" },
+      "subtitle": "example.com",
+      "url": "https://example.com",
+      "view": 1
+    },
+    {
+      "id": "site-2",
+      "title": { "ar": "رابط تجريبي (webview2)", "en": "Sample link (webview2)", "es": "Enlace de ejemplo (webview2)", "vi": "Liên kết mẫu (webview2)", "hi": "नमूना लिंक (webview2)", "pt": "Link de exemplo (webview2)" },
+      "subtitle": "example.org",
+      "url": "https://example.org",
+      "view": 2,
+      "allowed": ["example.org", "iana.org"]
+    }
+  ]
+}

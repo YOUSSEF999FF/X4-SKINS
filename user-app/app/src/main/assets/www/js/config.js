@@ -21,6 +21,9 @@
     },
     update: function (j) {
       return j && typeof j.latestVersion === 'string' && /^\d+(\.\d+){0,3}$/.test(j.latestVersion.trim());
+    },
+    start: function (j) {
+      return j && Array.isArray(j.items);
     }
   };
 

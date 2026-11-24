@@ -45,10 +45,15 @@
   function nav(name) {
     var p = X4.router.go(name);
     if (name === 'home') homeBg.setActive(true);
-    p.then(function (ok) { if (ok && X4.router.cur() !== 'home') homeBg.setActive(false); });
+    p.then(function (ok) {
+      if (!ok) return;
+      if (X4.router.cur() !== 'home') homeBg.setActive(false);
+      if (name === 'start') X4.start.enter();             // 18 MAX emblem → list of links
+    });
     return p;
   }
   function back() {
+    if (X4.router.cur() === 'start') X4.start.teardown();  // closes the sites; downloads keep running
     var p = X4.router.back();
     homeBg.setActive(true);                               // every phase-1 sub page returns to page 2
     return p;
@@ -133,9 +138,12 @@
   window.__native_onBack = function () {
     if (netVisible) return false;
     if (X4.update.isShown()) return X4.update.handleBack();
+    if (X4.leave.isOpen()) { X4.leave.cancel(); return true; }
+    if (X4.dl.isOpen()) { X4.dl.hide(); return true; }
     if (X4.emblem.isPlaying() || X4.router.isBusy()) return true;
     var c = X4.router.cur();
     if (c === 'intro') { X4.intro.skip(); return true; }
+    if (c === 'start') return X4.start.onBack();          // back inside the site → list → page 2
     if (c !== 'home') { back(); return true; }
     return false;
   };
@@ -150,6 +158,9 @@
     I.init();
     X4.router.init();
     homeBg = makeHomeBg();
+    X4.hit.init();
+    X4.dl.init();
+    X4.start.home = back;
 
     netModal = X4.$('#netdlg'); netPanel = X4.$('.panel', netModal); netStatus = X4.$('#net-status'); netRetry = X4.$('#net-retry');
     buildLangBar();
