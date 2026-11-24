@@ -5,23 +5,24 @@
     {
       "id": "video-1",
       "title": {
-        "ar": "شرح 1",
-        "en": "Explanation 1",
-        "es": "Explicación 1",
-        "vi": "Hướng dẫn 1",
-        "hi": "व्याख्या 1",
-        "pt": "Explicação 1"
+        "ar": "حل مشكلة أكتمل مع وجود اخطاء",
+        "en": "Problem solving is complete with errors",
+        "es": "Probleemide lahendamine on täis vigu",
+        "vi": "Vấn đề đã được giải quyết với lỗi",
+        "hi": "समस्या समाधान त्रुटियों के साथ पूरा होता है",
+        "pt": "A resolução de problemas está completa com erros"
       },
       "label": {
-        "ar": "فيديو 1",
-        "en": "Video 1",
-        "es": "Video 1",
-        "vi": "Video 1",
-        "hi": "वीडियो 1",
-        "pt": "Vídeo 1"
+        "ar": "مشكلة التركيب",
+        "en": "Installation problem",
+        "es": "Paigaldusprobleem",
+        "vi": "Vấn đề cài đặt",
+        "hi": "इंस्टॉलेशन समस्या",
+        "pt": "Problema de instalação"
       },
-      "description": "",
-      "youtube": "",
+      "description": "⚠️ You get a message "Completed with errors" and you don't know how to fix it?In this video, I will explain the correct solution to the problem step by step, and how to handle the error properly so that the process is completed without issues. 🔥
+Quick and clear explanation, so focus on every step and don't rush to solve the problem from the very first time. ✅🚀 Watch the video for the end and apply the steps in order. AHM X — We always solve the problem at its root. 🥶🔥 ",
+      "youtube": "https://youtu.be/2rHmrMkpor0?si=ePY114WmNCC29BRW",
       "image": "",
       "icon": "youtube",
       "shape": ""
