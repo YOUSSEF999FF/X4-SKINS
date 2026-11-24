@@ -168,6 +168,10 @@
     'leave.ok': {
       ar: 'موافق', en: 'OK', es: 'Aceptar', vi: 'Đồng ý', hi: 'ठीक है', pt: 'OK'
     },
+    'ex.empty': {
+      ar: 'لا يوجد فيديو هنا بعد', en: 'No video here yet', es: 'Aún no hay video aquí',
+      vi: 'Chưa có video ở đây', hi: 'यहाँ अभी कोई वीडियो नहीं है', pt: 'Ainda não há vídeo aqui'
+    },
     'soon.title': {
       ar: 'هذا القسم قادم في التحديث التالي', en: 'This section arrives in the next update',
       es: 'Esta sección llegará en la próxima actualización', vi: 'Mục này sẽ có ở bản cập nhật tiếp theo',

@@ -67,7 +67,23 @@
       <button class="back" type="button" data-back data-i18n-aria="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h1>Explanations</h1>
     </header>
-    <div class="soon"><div class="soon-mark">▶</div><p data-i18n="soon.title"></p></div>
+    <div class="ex-stage">
+      <div class="ex-player" id="ex-player">
+        <div class="ex-ph" id="ex-ph">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a.8.8 0 0 0 1.2.7l10.6-6.5a.8.8 0 0 0 0-1.4L9.2 4.8A.8.8 0 0 0 8 5.5z" fill="currentColor"/></svg>
+          <p id="ex-ph-t"></p>
+        </div>
+      </div>
+      <div class="ex-meta">
+        <h2 class="ex-title" id="ex-title"></h2>
+        <p class="ex-desc" id="ex-desc"></p>
+        <button id="ex-open" class="btn btn-primary" type="button" disabled>
+          <svg class="yt-ico" viewBox="20 32 60 56" aria-hidden="true"><path d="M22 46Q22 39 29 38C40 36.6 60 36.6 71 38Q78 39 78 46V74Q78 81 71 82C60 83.4 40 83.4 29 82Q22 81 22 74Z" fill="#fff"/><path d="M43 49L63 60L43 71Z" fill="#1456da"/></svg>
+          <span class="lbl">Open in YouTube</span>
+        </button>
+      </div>
+    </div>
+    <nav id="ex-bar" class="ex-bar" aria-label="Explanations"></nav>
   </section>
 
   <section id="screen-info" class="screen sub" aria-label="AHM X INFO">
@@ -75,7 +91,7 @@
       <button class="back" type="button" data-back data-i18n-aria="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h1>AHM X INFO</h1>
     </header>
-    <div class="soon"><div class="soon-mark">i</div><p data-i18n="soon.title"></p></div>
+    <div id="info-list" class="info-list"></div>
   </section>
 
   <!-- page transition light sweep -->
@@ -228,6 +244,7 @@
 <script src="js/net.js"></script>
 <script src="js/bgfx.js"></script>
 <script src="js/fx.js"></script>
+<script src="js/glyphs.js"></script>
 <script src="js/emblem.js"></script>
 <script src="js/hit.js"></script>
 <script src="js/intro.js"></script>
@@ -236,6 +253,8 @@
 <script src="js/start.js"></script>
 <script src="js/leave.js"></script>
 <script src="js/dl.js"></script>
+<script src="js/explain.js"></script>
+<script src="js/info.js"></script>
 <script src="js/router.js"></script>
 <script src="js/app.js"></script>
 </body>

@@ -1,0 +1,60 @@
+{
+  "_help": "صفحة AHM X INFO: كل عنصر = كارت. title اسم الزر (نص أو بالـ6 لغات)، url الرابط (https:// أو tg:// أو whatsapp://) — لو فاضي الكارت يظهر ولما تضغط عليه يقول إن الرابط مش مضاف. icon: whatsapp/telegram/bot/group/discord/website/channel/youtube/link. image شعارك الخاص (رابط https أو مسار جوه data زي images/x.png، مش SVG). shape شكل تأثير الدرع (اختياري). enabled=false لإخفاء الكارت.",
+  "version": 1,
+  "items": [
+    {
+      "id": "whatsapp-channel",
+      "title": "WhatsApp Channel",
+      "subtitle": "",
+      "url": "",
+      "icon": "whatsapp",
+      "image": "",
+      "shape": ""
+    },
+    {
+      "id": "telegram-channel",
+      "title": "Telegram Channel",
+      "subtitle": "",
+      "url": "",
+      "icon": "telegram",
+      "image": "",
+      "shape": ""
+    },
+    {
+      "id": "telegram-bot",
+      "title": "Telegram Bot",
+      "subtitle": "",
+      "url": "",
+      "icon": "bot",
+      "image": "",
+      "shape": ""
+    },
+    {
+      "id": "telegram-group",
+      "title": "Telegram Group",
+      "subtitle": "",
+      "url": "",
+      "icon": "group",
+      "image": "",
+      "shape": ""
+    },
+    {
+      "id": "discord",
+      "title": "Discord Server",
+      "subtitle": "",
+      "url": "",
+      "icon": "discord",
+      "image": "",
+      "shape": ""
+    },
+    {
+      "id": "website",
+      "title": "Website",
+      "subtitle": "",
+      "url": "",
+      "icon": "website",
+      "image": "",
+      "shape": ""
+    }
+  ]
+}

@@ -49,11 +49,16 @@
       if (!ok) return;
       if (X4.router.cur() !== 'home') homeBg.setActive(false);
       if (name === 'start') X4.start.enter();             // 18 MAX emblem → list of links
+      else if (name === 'explain') X4.explain.enter();    // player + floating bar
+      else if (name === 'info') X4.info.enter();          // social links
     });
     return p;
   }
   function back() {
-    if (X4.router.cur() === 'start') X4.start.teardown();  // closes the sites; downloads keep running
+    var here = X4.router.cur();
+    if (here === 'start') X4.start.teardown();             // closes the sites; downloads keep running
+    else if (here === 'explain') X4.explain.leave();       // stops the player
+    else if (here === 'info') X4.info.leave();
     var p = X4.router.back();
     homeBg.setActive(true);                               // every phase-1 sub page returns to page 2
     return p;

@@ -1,0 +1,150 @@
+{
+  "_help": "صفحة Explanations: 6 عناصر كحد أقصى. youtube = رابط الفيديو (watch أو youtu.be أو shorts أو قائمة تشغيل) أو الـ ID فقط. image = صورة الشعار (رابط https أو مسار جوه مجلد data مثل images/a.png — PNG/JPG/WebP مش SVG). icon بديل لو مفيش صورة: youtube/play/telegram/whatsapp/discord/website/bot/group/channel/link. shape شكل تأثير الدرع: shield/badge/circle/squircle/hexagon/diamond/banner/octagon (لو فاضي بيتحدد تلقائي). enabled=false لإخفاء العنصر.",
+  "version": 1,
+  "items": [
+    {
+      "id": "video-1",
+      "title": {
+        "ar": "شرح 1",
+        "en": "Explanation 1",
+        "es": "Explicación 1",
+        "vi": "Hướng dẫn 1",
+        "hi": "व्याख्या 1",
+        "pt": "Explicação 1"
+      },
+      "label": {
+        "ar": "فيديو 1",
+        "en": "Video 1",
+        "es": "Video 1",
+        "vi": "Video 1",
+        "hi": "वीडियो 1",
+        "pt": "Vídeo 1"
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": ""
+    },
+    {
+      "id": "video-2",
+      "title": {
+        "ar": "شرح 2",
+        "en": "Explanation 2",
+        "es": "Explicación 2",
+        "vi": "Hướng dẫn 2",
+        "hi": "व्याख्या 2",
+        "pt": "Explicação 2"
+      },
+      "label": {
+        "ar": "فيديو 2",
+        "en": "Video 2",
+        "es": "Video 2",
+        "vi": "Video 2",
+        "hi": "वीडियो 2",
+        "pt": "Vídeo 2"
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": ""
+    },
+    {
+      "id": "video-3",
+      "title": {
+        "ar": "شرح 3",
+        "en": "Explanation 3",
+        "es": "Explicación 3",
+        "vi": "Hướng dẫn 3",
+        "hi": "व्याख्या 3",
+        "pt": "Explicação 3"
+      },
+      "label": {
+        "ar": "فيديو 3",
+        "en": "Video 3",
+        "es": "Video 3",
+        "vi": "Video 3",
+        "hi": "वीडियो 3",
+        "pt": "Vídeo 3"
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": ""
+    },
+    {
+      "id": "video-4",
+      "title": {
+        "ar": "شرح 4",
+        "en": "Explanation 4",
+        "es": "Explicación 4",
+        "vi": "Hướng dẫn 4",
+        "hi": "व्याख्या 4",
+        "pt": "Explicação 4"
+      },
+      "label": {
+        "ar": "فيديو 4",
+        "en": "Video 4",
+        "es": "Video 4",
+        "vi": "Video 4",
+        "hi": "वीडियो 4",
+        "pt": "Vídeo 4"
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": ""
+    },
+    {
+      "id": "video-5",
+      "title": {
+        "ar": "شرح 5",
+        "en": "Explanation 5",
+        "es": "Explicación 5",
+        "vi": "Hướng dẫn 5",
+        "hi": "व्याख्या 5",
+        "pt": "Explicação 5"
+      },
+      "label": {
+        "ar": "فيديو 5",
+        "en": "Video 5",
+        "es": "Video 5",
+        "vi": "Video 5",
+        "hi": "वीडियो 5",
+        "pt": "Vídeo 5"
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": ""
+    },
+    {
+      "id": "video-6",
+      "title": {
+        "ar": "شرح 6",
+        "en": "Explanation 6",
+        "es": "Explicación 6",
+        "vi": "Hướng dẫn 6",
+        "hi": "व्याख्या 6",
+        "pt": "Explicação 6"
+      },
+      "label": {
+        "ar": "فيديو 6",
+        "en": "Video 6",
+        "es": "Video 6",
+        "vi": "Video 6",
+        "hi": "वीडियो 6",
+        "pt": "Vídeo 6"
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": ""
+    }
+  ]
+}

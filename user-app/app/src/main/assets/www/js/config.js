@@ -24,8 +24,23 @@
     },
     start: function (j) {
       return j && Array.isArray(j.items);
+    },
+    explain: function (j) {
+      return j && Array.isArray(j.items);
+    },
+    info: function (j) {
+      return j && Array.isArray(j.items);
     }
   };
+
+  /* an image named in a JSON file: a full https link, or a path inside the repo's data/ folder (e.g. "images/logo.png") */
+  function asset(path) {
+    if (!path || typeof path !== 'string') return '';
+    path = path.trim();
+    if (/^https:\/\//i.test(path)) return path;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(path) || path.indexOf('..') > -1) return '';      // no other schemes, no climbing out of data/
+    return (base() || './data/') + path.replace(/^\.?\//, '');
+  }
 
   /* returns { data, source } where source is 'remote' | 'cache' | 'bundled', or null */
   function load(name) {
@@ -57,5 +72,5 @@
       .catch(function () { return null; });
   }
 
-  X4.config = { load: load, base: base };
+  X4.config = { load: load, base: base, asset: asset };
 })();

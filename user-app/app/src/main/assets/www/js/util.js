@@ -103,6 +103,7 @@
     window.__native_onSite = function (j) { var o = parse(j); if (o) ev.emit('site', o); };
     window.__native_onDl = function (j) { var o = parse(j); if (o) ev.emit('dl', o); };
     window.__native_onLeave = function (url) { ev.emit('leave', url); };
+    window.__native_onYt = function (what) { ev.emit('yt', String(what)); };
 
     return {
       has: !!B,
@@ -122,6 +123,13 @@
       leaveCancel: function () { try { if (B && B.leaveCancel) B.leaveCancel(); } catch (e) {} },
       cancelDownload: function (id) { try { if (B && B.cancelDownload) B.cancelDownload(id | 0); } catch (e) {} },
       openFile: function (ref, mime) { try { return !!(B && B.openFile && B.openFile(String(ref || ''), String(mime || ''))); } catch (e) { return false; } },
+      /* the YouTube player of the Explanations page is a native view that sits over the page (see explain.js) */
+      yt: {
+        has: !!(B && B.ytLoad),
+        load: function (kind, id, autoplay) { try { if (B && B.ytLoad) B.ytLoad(String(kind), String(id), !!autoplay); } catch (e) {} },
+        layout: function (show, l, t, w, h) { try { if (B && B.ytLayout) B.ytLayout(!!show, Math.round(l), Math.round(t), Math.round(w), Math.round(h)); } catch (e) {} },
+        stop: function () { try { if (B && B.ytStop) B.ytStop(); } catch (e) {} }
+      },
       probe: probe,
       openExternal: function (url) {
         if (!url) return false;

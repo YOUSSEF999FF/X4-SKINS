@@ -9,6 +9,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -16,12 +17,15 @@ import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.DisplayCutout;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -52,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +69,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * X4 SKINS 18 MAX - Android shell.
@@ -75,6 +81,7 @@ import java.util.concurrent.TimeUnit;
  *  - streaming the background video (assets/www/assets/bg.mp4) with HTTP Range support,
  *  - PAGE 3: two real site WebViews (webview1 / webview2) UNDER our transparent interface WebView, real file downloads
  *    into Download/AHM X APP, and the "leaving the app" rule of webview2.
+ *  - EXPLANATIONS page: a small separate WebView (no bridge!) that plays the YouTube embed exactly over the player frame.
  */
 public class MainActivity extends Activity {
 
@@ -85,6 +92,7 @@ public class MainActivity extends Activity {
 
     private static final int REQ_STORAGE = 77;
 
+    private FrameLayout root;                  // everything lives in here
     private UiWebView web;                     // our interface (transparent while a site is open)
     private FrameLayout siteHost;              // holds webview1 / webview2, drawn below the interface
     private Site site1, site2, activeSite, pendingSite;
@@ -97,6 +105,9 @@ public class MainActivity extends Activity {
     private final ExecutorService pool = Executors.newCachedThreadPool();
     private long lastNetPing = 0;
     private int lastKb = -1;
+    private final Handler ui = new Handler(Looper.getMainLooper());
+    private WebView yt;                        // YouTube player view, created on demand, above the interface
+    private boolean ytPlayWhenShown;           // the last load asked for autoplay and the view has not been shown since
 
     // ------------------------------------------------------------------ lifecycle
 
@@ -106,7 +117,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         prepareWindow();
 
-        FrameLayout root = new FrameLayout(this);
+        root = new FrameLayout(this);
         root.setBackgroundColor(BG);
         siteHost = new FrameLayout(this);                      // below: the sites
         root.addView(siteHost, new FrameLayout.LayoutParams(
@@ -144,8 +155,8 @@ public class MainActivity extends Activity {
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
                 .build();
 
-        // NOTE (phase 3): the bridge is exposed to every frame of this WebView. Pages that embed third-party
-        // frames (YouTube) must either live in their own WebView or switch to WebViewCompat.addWebMessageListener.
+        // NOTE: the bridge is exposed to every frame of THIS WebView, so no third-party frame may ever live in it.
+        // The YouTube player therefore has its own WebView (see makeYt) which never gets a JavaScript interface.
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
         web.setWebChromeClient(new WebChromeClient());
         web.setWebViewClient(new AppClient());
@@ -160,6 +171,7 @@ public class MainActivity extends Activity {
         super.onResume();
         web.onResume();
         if (activeSite != null) activeSite.wv.onResume();
+        if (yt != null) yt.onResume();
         js("window.__native_onResume&&window.__native_onResume()");
     }
 
@@ -168,6 +180,7 @@ public class MainActivity extends Activity {
         js("window.__native_onPause&&window.__native_onPause()");
         web.onPause();
         if (activeSite != null) activeSite.wv.onPause();
+        if (yt != null) { ytCmd("pauseVideo"); yt.onPause(); }      // leaving the app must not leave a video playing
         CookieManager.getInstance().flush();
         super.onPause();
     }
@@ -180,6 +193,7 @@ public class MainActivity extends Activity {
         pool.shutdownNow();
         if (downloader != null) downloader.shutdown();
         closeSitesUi();
+        ytStopUi();
         if (web != null) {
             web.removeJavascriptInterface("AndroidBridge");
             web.destroy();
@@ -701,6 +715,168 @@ public class MainActivity extends Activity {
         }
     }
 
+    // ------------------------------------------------------------------ Explanations page : the YouTube player
+
+    private static final Pattern YT_ID = Pattern.compile("^[A-Za-z0-9_-]{6,64}$");
+    private static final String YT_PATH = "/yt/player.html";
+
+    /**
+     * The player is its OWN WebView, laid over the player frame of the page (the page reports the frame's rectangle).
+     * It never gets the JavaScript bridge, so nothing that runs inside a YouTube frame can reach this app.
+     * Its only page is a tiny HTML document we build ourselves (served from the secure origin below, so YouTube sees a
+     * real https referrer); the id is validated first, nothing else from the page is ever put into the HTML.
+     */
+    @SuppressLint("SetJavaScriptEnabled")
+    private WebView makeYt() {
+        final WebView w = new WebView(this);
+        w.setBackgroundColor(Color.BLACK);
+        WebSettings s = w.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setDomStorageEnabled(true);
+        s.setMediaPlaybackRequiresUserGesture(false);
+        s.setAllowFileAccess(false);
+        s.setAllowContentAccess(false);
+        s.setSupportMultipleWindows(false);
+        s.setJavaScriptCanOpenWindowsAutomatically(false);
+        s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        s.setSupportZoom(false);
+        s.setBuiltInZoomControls(false);
+        s.setDisplayZoomControls(false);
+        s.setTextZoom(100);
+        s.setUserAgentString(s.getUserAgentString().replace("; wv", ""));   // the same browser identity a phone browser has
+        CookieManager.getInstance().setAcceptThirdPartyCookies(w, true);
+        w.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        w.setVerticalScrollBarEnabled(false);
+        w.setHorizontalScrollBarEnabled(false);
+        final float radius = 18f * getResources().getDisplayMetrics().density;
+        w.setOutlineProvider(new ViewOutlineProvider() {            // rounded corners like the frame on the page
+            @Override public void getOutline(View v, Outline o) {
+                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), radius);
+            }
+        });
+        w.setClipToOutline(true);
+        w.setVisibility(View.INVISIBLE);
+        w.setWebViewClient(new YtClient());
+        w.setWebChromeClient(new WebChromeClient());
+        root.addView(w, new FrameLayout.LayoutParams(1, 1, Gravity.TOP | Gravity.LEFT));
+        return w;
+    }
+
+    /** The embed address of a video or a playlist. fs=0: full screen is not offered (the page has "Open in YouTube"). */
+    private static String ytEmbedUrl(boolean list, String id, boolean auto) {
+        String q = "playsinline=1&rel=0&modestbranding=1&fs=0&iv_load_policy=3&enablejsapi=1&origin=https%3A%2F%2F" + HOST
+                + "&autoplay=" + (auto ? "1" : "0");
+        return list ? "https://www.youtube.com/embed/videoseries?list=" + id + "&" + q
+                    : "https://www.youtube.com/embed/" + id + "?" + q;
+    }
+
+    private static String ytPageHtml(boolean list, String id, boolean auto) {
+        return "<!doctype html><html><head><meta charset=\"utf-8\">"
+                + "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+                + "<meta name=\"referrer\" content=\"strict-origin-when-cross-origin\">"
+                + "<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}"
+                + "iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0}</style></head><body>"
+                + "<iframe src=\"" + ytEmbedUrl(list, id, auto) + "\" allow=\"autoplay; encrypted-media; picture-in-picture\""
+                + " referrerpolicy=\"strict-origin-when-cross-origin\"></iframe></body></html>";
+    }
+
+    private final class YtClient extends WebViewClient {
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest req) {
+            Uri u = req.getUrl();
+            if (!HOST.equals(u.getHost())) return null;                      // YouTube's own files: the network
+            Map<String, String> h = new HashMap<>();
+            h.put("Cache-Control", "no-store");
+            h.put("Referrer-Policy", "strict-origin-when-cross-origin");
+            String id = u.getQueryParameter("i");
+            if (YT_PATH.equals(u.getPath()) && id != null && YT_ID.matcher(id).matches()) {
+                String html = ytPageHtml("list".equals(u.getQueryParameter("k")), id, "1".equals(u.getQueryParameter("a")));
+                return new WebResourceResponse("text/html", "utf-8", 200, "OK", h,
+                        new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8)));
+            }
+            return new WebResourceResponse("text/plain", "utf-8", 404, "Not Found", h, new ByteArrayInputStream(new byte[0]));
+        }
+
+        /** Nothing may navigate this view away: a tap on the YouTube logo / title opens YouTube outside the app. */
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
+            if (!req.isForMainFrame()) return false;
+            Uri u = req.getUrl();
+            if (HOST.equals(u.getHost())) return false;
+            String h = hostOf(u.toString());
+            if (req.hasGesture() && (h.equals("youtube.com") || h.endsWith(".youtube.com") || h.equals("youtu.be"))) openOutside(u.toString());
+            return true;
+        }
+
+        @Override
+        public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+            runOnUiThread(() -> { ytStopUi(); js("window.__native_onYt&&window.__native_onYt('gone')"); });
+            return true;
+        }
+    }
+
+    private void ytLoadUi(String kind, String id, boolean auto) {
+        if (id == null || !YT_ID.matcher(id).matches()) return;
+        if (yt == null) yt = makeYt();
+        ytPlayWhenShown = auto;
+        ui.removeCallbacksAndMessages(null);
+        yt.loadUrl("https://" + HOST + YT_PATH + "?k=" + ("list".equals(kind) ? "list" : "v") + "&i=" + id
+                + "&a=" + (auto ? "1" : "0") + "&t=" + SystemClock.elapsedRealtime());
+    }
+
+    /** Sends one fixed command (play / pause) to the YouTube player inside the view. Only the two names below ever pass. */
+    private void ytCmd(String func) {
+        if (yt == null || !(func.equals("playVideo") || func.equals("pauseVideo"))) return;
+        yt.evaluateJavascript("(function(){try{var f=document.querySelector('iframe');if(f)f.contentWindow.postMessage("
+                + "'{\"event\":\"command\",\"func\":\"" + func + "\",\"args\":\"\"}','*');}catch(e){}})()", null);
+    }
+
+    /** Show the player over the given rectangle (CSS px of the interface page) or hide it. Hiding also pauses the video. */
+    private void ytLayoutUi(boolean show, int l, int t, int w, int h) {
+        if (yt == null) return;
+        if (!show || w < 8 || h < 8) {
+            if (yt.getVisibility() == View.VISIBLE) ytCmd("pauseVideo");
+            yt.setVisibility(View.INVISIBLE);
+            return;
+        }
+        float d = getResources().getDisplayMetrics().density;
+        int pl = Math.round(l * d), pt = Math.round(t * d), pw = Math.round(w * d), ph = Math.round(h * d);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) yt.getLayoutParams();
+        if (lp.leftMargin != pl || lp.topMargin != pt || lp.width != pw || lp.height != ph) {
+            lp.gravity = Gravity.TOP | Gravity.LEFT;
+            lp.leftMargin = pl;
+            lp.topMargin = pt;
+            lp.width = pw;
+            lp.height = ph;
+            yt.setLayoutParams(lp);
+            yt.invalidateOutline();
+        }
+        boolean wasHidden = yt.getVisibility() != View.VISIBLE;
+        yt.setVisibility(View.VISIBLE);
+        if (wasHidden && ytPlayWhenShown) {
+            // a video that was chosen by a tap starts by itself; a hidden view may have held the autoplay back, so ask again
+            ytPlayWhenShown = false;
+            ytCmd("playVideo");
+            ui.postDelayed(() -> ytCmd("playVideo"), 600);
+            ui.postDelayed(() -> ytCmd("playVideo"), 1500);
+        }
+    }
+
+    private void ytStopUi() {
+        ui.removeCallbacksAndMessages(null);
+        ytPlayWhenShown = false;
+        WebView w = yt;
+        yt = null;
+        if (w == null) return;
+        try {
+            w.stopLoading();
+            if (root != null) root.removeView(w);
+            w.destroy();
+        } catch (Exception e) {
+            Log.w(TAG, "ytStop: " + e);
+        }
+    }
+
     // ------------------------------------------------------------------ page 3 : downloads
 
     private void emitDl(JSONObject o) {
@@ -899,6 +1075,25 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public boolean openFile(final String ref, final String mime) {
             return onUi(() -> openDownloaded(ref, mime), Boolean.FALSE);
+        }
+
+        // ---------------------------------------------------------------- Explanations page
+
+        /** kind "v" (one video) or "list" (a playlist), id = the YouTube id. Loads it in the player view (shown by ytLayout). */
+        @JavascriptInterface
+        public void ytLoad(final String kind, final String id, final boolean autoplay) {
+            runOnUiThread(() -> ytLoadUi(kind, id, autoplay));
+        }
+
+        /** Where the player frame is on the page (CSS px); show=false hides (and pauses) the player. */
+        @JavascriptInterface
+        public void ytLayout(final boolean show, final int l, final int t, final int w, final int h) {
+            runOnUiThread(() -> ytLayoutUi(show, l, t, w, h));
+        }
+
+        @JavascriptInterface
+        public void ytStop() {
+            runOnUiThread(() -> ytStopUi());
         }
 
         @JavascriptInterface
