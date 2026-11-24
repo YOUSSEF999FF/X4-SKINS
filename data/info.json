@@ -5,8 +5,8 @@
     {
       "id": "whatsapp-channel",
       "title": "WhatsApp Channel",
-      "subtitle": "",
-      "url": "",
+      "subtitle": "AHM X CHANNEL",
+      "url": "https://whatsapp.com/channel/0029VbC0IJLFcow0U7HBX13f",
       "icon": "whatsapp",
       "image": "",
       "shape": ""
@@ -14,17 +14,17 @@
     {
       "id": "telegram-channel",
       "title": "Telegram Channel",
-      "subtitle": "",
-      "url": "",
+      "subtitle": "AHM X OFFICIAL",
+      "url": "https://t.me/LOKING_YT",
       "icon": "telegram",
       "image": "",
       "shape": ""
     },
     {
       "id": "telegram-bot",
-      "title": "Telegram Bot",
-      "subtitle": "",
-      "url": "",
+      "title": "Contact me",
+      "subtitle": "CHAT WITH ME",
+      "url": "https://t.me/CONTACT_AHM_X_bot",
       "icon": "bot",
       "image": "",
       "shape": ""
@@ -32,8 +32,8 @@
     {
       "id": "telegram-group",
       "title": "Telegram Group",
-      "subtitle": "",
-      "url": "",
+      "subtitle": "AHM X-CHAT",
+      "url": "https://t.me/+2wBKle0hLMQ2ZWZk",
       "icon": "group",
       "image": "",
       "shape": ""
@@ -41,8 +41,8 @@
     {
       "id": "discord",
       "title": "Discord Server",
-      "subtitle": "",
-      "url": "",
+      "subtitle": "AHM X SERVER",
+      "url": "https://discord.gg/UJmRsbQ4zf",
       "icon": "discord",
       "image": "",
       "shape": ""
@@ -50,8 +50,8 @@
     {
       "id": "website",
       "title": "Website",
-      "subtitle": "",
-      "url": "",
+      "subtitle": "AHM X WEBSITE",
+      "url": "https://world-skins-yt.blogspot.com/?m=1",
       "icon": "website",
       "image": "",
       "shape": ""
