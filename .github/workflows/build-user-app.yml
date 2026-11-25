@@ -41,8 +41,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Accept Android SDK licenses
-        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+      - uses: android-actions/setup-android@v4
 
       - uses: gradle/actions/setup-gradle@v3
         with:
@@ -127,3 +126,4 @@ jobs:
           files: |
             out/X4-SKINS-18-MAX.apk
             out/X4-SKINS-18-MAX-v${{ env.VERSION_NAME }}.apk
+w
