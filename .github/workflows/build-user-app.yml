@@ -126,4 +126,3 @@ jobs:
           files: |
             out/X4-SKINS-18-MAX.apk
             out/X4-SKINS-18-MAX-v${{ env.VERSION_NAME }}.apk
-w
