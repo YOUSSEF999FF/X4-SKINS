@@ -5,23 +5,23 @@
     {
       "id": "video-1",
       "title": {
-        "ar": "حل مشكلة أكتمل مع وجود اخطاء",
-        "en": "Problem solving is complete with errors",
-        "es": "Probleemide lahendamine on täis vigu",
-        "vi": "Vấn đề đã được giải quyết với lỗi",
-        "hi": "समस्या समाधान त्रुटियों के साथ पूरा होता है",
-        "pt": "A resolução de problemas está completa com erros"
+        "ar": "شرح 1",
+        "en": "Explanation 1",
+        "es": "Explicación 1",
+        "vi": "Hướng dẫn 1",
+        "hi": "व्याख्या 1",
+        "pt": "Explicação 1"
       },
       "label": {
-        "ar": "مشكلة التركيب",
-        "en": "Installation problem",
-        "es": "Paigaldusprobleem",
-        "vi": "Vấn đề cài đặt",
-        "hi": "इंस्टॉलेशन समस्या",
-        "pt": "Problema de instalação"
+        "ar": "فيديو 1",
+        "en": "Video 1",
+        "es": "Video 1",
+        "vi": "Video 1",
+        "hi": "वीडियो 1",
+        "pt": "Vídeo 1"
       },
-      "description": "If you cannot watch the video here click the Open in YouTube button to enjoy watching it without interruptions  :  AHM X Everything to the Max"
-      "youtube": "https://youtu.be/2rHmrMkpor0?si=ePY114WmNCC29BRW",
+      "description": "",
+      "youtube": "",
       "image": "",
       "icon": "youtube",
       "shape": ""
@@ -45,7 +45,7 @@
         "pt": "Vídeo 2"
       },
       "description": "",
-      "youtube": "https://youtu.be/2rHmrMkpor0?si=ePY114WmNCC29BRW",
+      "youtube": "",
       "image": "",
       "icon": "youtube",
       "shape": ""
