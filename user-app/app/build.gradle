@@ -20,6 +20,21 @@ android {
         versionName vName
     }
 
+    // Two editions built from the SAME code and the SAME data/*.json:
+    //   full = the normal app with all the effects            (com.ahmx.x4skins18max)
+    //   lite = no effects at all, for weak phones             (com.ahmx.x4skins18max.lite  -> installs beside the full one)
+    // Edition files live in src/full and src/lite (assets/www/edition.js, and for lite: the app name + a green icon).
+    flavorDimensions 'edition'
+    productFlavors {
+        full {
+            dimension 'edition'
+        }
+        lite {
+            dimension 'edition'
+            applicationIdSuffix '.lite'
+        }
+    }
+
     signingConfigs {
         release {
             if (hasKeystore) {

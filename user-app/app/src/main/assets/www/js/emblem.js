@@ -84,6 +84,10 @@
   /* play(shapeName, { onPeak }) → resolves when the frost has fully cleared.
      Calls are queued so two effects never fight over the same layer. */
   function play(name, o) {
+    if (X4.perf.lite) {                                  // LITE: no shield effect — go straight to what it was revealing
+      if (o && o.onPeak) { try { o.onPeak(); } catch (e) { console.error(e); } }
+      return Promise.resolve();
+    }
     queued++;
     var p = chain.then(function () { return run(name, o); });
     chain = p.catch(function () {}).then(function () { queued--; });

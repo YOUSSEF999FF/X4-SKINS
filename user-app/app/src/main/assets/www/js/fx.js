@@ -40,6 +40,7 @@
 
   /* ---------------------------------------------------------------- lightning border */
   function lightningBorder(host, o) {
+    if (X4.perf.lite) return { stop: function () {}, resize: function () {} };      // LITE: no lightning
     o = o || {};
     var pad = o.pad || 16, radius = o.radius || 22, color = o.color || '80,190,255', amp = o.amp || 2.2, fps = X4.perf.low ? 8 : (o.fps || 14);
     var cv = document.createElement('canvas');
@@ -105,6 +106,14 @@
   /* ---------------------------------------------------------------- lightning touch effect */
   function pressable(btn, o) {
     o = o || {};
+    if (X4.perf.lite) {                                // LITE: just a haptic tick + a flat "pressed" colour, no tilt/ripple/bolts
+      btn.addEventListener('pointerdown', function () {
+        if (btn.disabled || btn.getAttribute('aria-disabled') === 'true') return;
+        btn.classList.add('is-pressed'); X4.native.haptic();
+      }, { passive: true });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { btn.addEventListener(n, function () { btn.classList.remove('is-pressed'); }, { passive: true }); });
+      return;
+    }
     var pad = 18, cv = null, ctx = null, raf = 0;
     var rip = document.createElement('span');
     rip.className = 'fx-ripples';
@@ -182,6 +191,10 @@
      Bolts crackle across the element while it flashes white-blue and vanishes. Resolves when it is gone. */
   function zap(el, o) {
     o = o || {};
+    if (X4.perf.lite) {                                // LITE: it simply disappears
+      if (o.hide) { try { o.hide(); } catch (e) { console.error(e); } }
+      return Promise.resolve();
+    }
     var r = el.getBoundingClientRect(), pad = 36, W = r.width + pad * 2, H = r.height + pad * 2;
     var cv = document.createElement('canvas'), dpr = X4.perf.low ? 1 : X4.perf.dpr;
     cv.width = Math.max(1, Math.round(W * dpr)); cv.height = Math.max(1, Math.round(H * dpr));
@@ -239,6 +252,7 @@
     modal.classList.add('open');
     modal.classList.add('in');
     hitRefresh();
+    if (X4.perf.lite) return Promise.resolve();        // LITE: appears instantly
     var a = panel.animate([
       { transform: 'perspective(900px) translateZ(-420px) rotateX(22deg) scale(.55)', opacity: 0, filter: 'blur(16px) brightness(2.2)' },
       { transform: 'perspective(900px) translateZ(46px) rotateX(-3deg) scale(1.05)', opacity: 1, filter: 'blur(2px) brightness(1.45)', offset: 0.6 },
@@ -252,6 +266,10 @@
 
   function dialogOut(modal, panel, o) {
     o = o || {};
+    if (X4.perf.lite) {                                // LITE: disappears instantly
+      modal.classList.remove('in'); modal.classList.remove('open'); hitRefresh();
+      return Promise.resolve();
+    }
     var a = panel.animate([
       { transform: 'perspective(900px) translateZ(0) scale(1)', opacity: 1, filter: 'blur(0) brightness(1)' },
       { transform: 'perspective(900px) translateZ(60px) scale(1.04)', opacity: 1, filter: 'blur(0) brightness(1.8)', offset: 0.3 },
@@ -268,6 +286,7 @@
   /* dialog leaves with the lightning effect (used by the download dialog) */
   function dialogZap(modal, panel) {
     modal.classList.remove('in');
+    if (X4.perf.lite) { modal.classList.remove('open'); hitRefresh(); return Promise.resolve(); }
     return zap(panel, { radius: 26, hide: function () { modal.classList.remove('open'); } }).then(hitRefresh);
   }
 

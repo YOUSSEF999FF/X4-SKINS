@@ -197,6 +197,7 @@
     isOpen = true;
     modal.setAttribute('aria-hidden', 'false');
     var p = X4.fx.dialogIn(modal, panel);
+    if (X4.perf.lite) return p;                                            // LITE: no lightning on the progress ring
     if (lb) lb.stop();
     lb = X4.fx.lightningBorder(panel, { pad: 16, radius: 26 });
     sizeCanvas();

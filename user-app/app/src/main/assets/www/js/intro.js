@@ -311,6 +311,11 @@
 
   function start(o) {
     o = o || {};
+    if (X4.perf.lite) {                                    // LITE: no cinematic — a still logo, then straight on
+      done = false; onDone = o.onDone || null;
+      setTimeout(function () { if (!done) { done = true; if (onDone) onDone(); } }, 700);
+      return Promise.resolve();
+    }
     root = X4.$('#screen-intro');
     bgC = X4.$('#intro-bg'); fxC = X4.$('#intro-fx'); logoPos = X4.$('#intro-logo-pos'); logo = X4.$('#intro-logo');
     flash = X4.$('#intro-flash'); fade = X4.$('#intro-fade'); skipBtn = X4.$('#intro-skip');
@@ -329,6 +334,7 @@
 
   function skip() {
     if (done) return;
+    if (X4.perf.lite) { done = true; if (onDone) onDone(); return; }
     var cur = (t0 == null) ? startAt : tNow(performance.now());
     skipOffset += Math.max(0, T.end + 0.05 - cur);
     if (flash) flash.animate([{ opacity: 0.45 }, { opacity: 0 }], { duration: 350 });

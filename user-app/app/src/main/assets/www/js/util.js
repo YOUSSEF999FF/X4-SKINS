@@ -39,7 +39,18 @@
     };
   };
 
-  X4.perf = { low: false, dpr: Math.min(window.devicePixelRatio || 1, 2) };
+  X4.perf = { low: false, lite: !!window.X4_LITE, dpr: Math.min(window.devicePixelRatio || 1, 2) };
+
+  /* LITE edition: no visual effects at all. Every Web-Animations call in the app becomes a no-op that is already
+     finished, so promise chains keep working and elements simply appear in their final state. */
+  if (X4.perf.lite) {
+    X4.perf.low = true; X4.perf.dpr = 1;
+    var _noop = function () {}, _done = Promise.resolve();
+    Element.prototype.animate = function () {
+      return { finished: _done, ready: _done, playState: 'finished', onfinish: null, oncancel: null,
+        cancel: _noop, finish: _noop, play: _noop, pause: _noop, reverse: _noop, addEventListener: _noop, removeEventListener: _noop };
+    };
+  }
 
   /* tiny event emitter */
   X4.Emitter = function () { this._h = {}; };

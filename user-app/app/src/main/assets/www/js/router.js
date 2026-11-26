@@ -26,6 +26,15 @@
   function go(name, o) {
     o = o || {};
     if (busy || name === cur || !screens[name]) return Promise.resolve(false);
+    if (X4.perf.lite) {                                  // LITE: instant page switch, no animation at all
+      var f = screens[cur], prevL = cur;
+      screens[name].classList.add('active');
+      f.classList.remove('active');
+      if (o.back) stack.pop(); else if (o.kind !== 'fade') stack.push(prevL);
+      cur = name;
+      R.emit('change', { from: prevL, to: name });
+      return Promise.resolve(true);
+    }
     busy = true;
     var from = screens[cur], to = screens[name], low = X4.perf.low;
     var rtl = document.documentElement.dir === 'rtl';

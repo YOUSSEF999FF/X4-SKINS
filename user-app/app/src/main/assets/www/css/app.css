@@ -364,3 +364,47 @@ html.site-on #screen-start { pointer-events: none; }
 .ic-tile svg { width: 32px; height: auto; filter: drop-shadow(0 0 5px rgba(190, 235, 255, .8)); }
 .info-card .out { flex: none; width: 20px; height: 20px; color: rgba(200, 230, 255, .8); position: relative; z-index: 2; }
 [dir="rtl"] .info-card .out { transform: scaleX(-1); }
+
+
+/* ============================================================ LITE edition (html.lite) — NO visual effects
+   Added by edition.js (src/lite). Everything below only applies to the LITE app; the normal app never has html.lite.
+   Rule of thumb: no animation, no transition, no blur, no glow, no shadow, no blend, no 3D, no video, no canvas. */
+html.lite *, html.lite *::before, html.lite *::after {
+  animation: none !important; transition: none !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  filter: none !important; text-shadow: none !important; box-shadow: none !important;
+  mix-blend-mode: normal !important; will-change: auto !important; scroll-behavior: auto !important;
+}
+/* things that exist only for effects */
+html.lite #intro-bg, html.lite #intro-fx, html.lite #intro-flash, html.lite #intro-fade, html.lite #intro-skip,
+html.lite #bg-video, html.lite #bg-canvas, html.lite .home-shade, html.lite #tx-sweep, html.lite #emblem-layer,
+html.lite .fx-ripples, html.lite .fx-bolts, html.lite .lb-canvas, html.lite #dl-bolts, html.lite .sheen,
+html.lite .panel-glass::before, html.lite .btn-main::before, html.lite .btn-main::after, html.lite .btn::after,
+html.lite .link-btn::before, html.lite .info-card::before { display: none !important; }
+html.lite .panel { transform-style: flat; }
+
+/* plain, flat backgrounds */
+html.lite #screen-home, html.lite .screen.sub { background: linear-gradient(180deg, #0a2150 0%, #050d24 48%, #02040b 100%); }
+html.lite #screen-intro { background: linear-gradient(180deg, #0a2150 0%, #050d24 48%, #02040b 100%); }
+html.lite #intro-logo { visibility: visible; }
+html.lite #intro-logo .l-front, html.lite #intro-logo .l-shine { display: none; }
+html.lite #intro-logo .l-back { color: var(--ice); }
+html.lite #intro-logo::after { content: '18 MAX'; display: block; margin-top: 10px; font-size: .5em; letter-spacing: .34em; padding-left: .34em; color: #7fd0ff; }
+
+/* dialogs: solid instead of frosted glass */
+html.lite .modal-backdrop { background: rgba(2, 4, 11, .9); }
+html.lite .panel-glass { background: #0c1630; border-color: rgba(150, 210, 255, .35); }
+html.lite .panel.err .panel-glass { border-color: rgba(var(--red), .9); }
+html.lite .ex-bar { background: rgba(10, 22, 50, .94); }
+html.lite #toast { background: #0c1630; }
+
+/* buttons: flat, a thin border instead of the spinning light ring; no 3D tilt, pressed = a little transparent */
+html.lite .btn, html.lite .btn-main, html.lite .link-btn, html.lite .info-card, html.lite .ex-it, html.lite .dl-chip { transform: none !important; }
+html.lite .btn-main { border: 1.5px solid rgba(150, 215, 255, .6); }
+html.lite .link-btn, html.lite .info-card { border: 1px solid rgba(150, 210, 255, .35); }
+html.lite .is-pressed { opacity: .72; }
+html.lite .field input:focus { border-color: rgba(var(--neon), 1); }
+
+/* the only moving things that stay: tiny "loading…" rings, so the person knows something is happening */
+html.lite .btn.loading::before, html.lite .link-btn.loading::after { animation: spin2 .9s linear infinite !important; }
+html.lite .lk-spin, html.lite .dl-spin.ind, html.lite .dl-chip .cg.ind { animation: spin2 1.1s linear infinite !important; }

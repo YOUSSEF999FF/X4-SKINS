@@ -27,6 +27,15 @@
     return loadP;
   }
 
+  /* LITE edition downloads the LITE apk: data.button.urlLite if the admin set one, otherwise the same link with
+     the standard file name swapped for the LITE one. */
+  function liteUrl(u, d) {
+    if (!X4.perf.lite) return u;
+    var own = d && d.button && typeof d.button.urlLite === 'string' ? d.button.urlLite.trim() : '';
+    if (own) return own;
+    return u.replace(/X4-SKINS-18-MAX(-v[\w.]+)?\.apk/i, function (m, v) { return 'X4-SKINS-18-MAX-LITE' + (v || '') + '.apk'; });
+  }
+
   function wire() {
     if (wired) return;
     wired = true;
@@ -35,7 +44,7 @@
     X4.fx.pressable(bGo, { radius: 17 }); X4.fx.pressable(bLater, { radius: 17 });
     bGo.addEventListener('click', function () {
       var u = data && ((data.button && data.button.url) || data.url);
-      if (u) X4.native.openExternal(String(u).trim()); else X4.toast(I.t('gate.noLink'));
+      if (u) X4.native.openExternal(liteUrl(String(u).trim(), data)); else X4.toast(I.t('gate.noLink'));
     });
     bLater.addEventListener('click', function () { dismiss(); });
     I.on('change', function () { if (shown) render(); });
@@ -104,5 +113,5 @@
     return true;
   }
 
-  X4.update = { load: load, run: run, watch: watch, handleBack: handleBack, isShown: function () { return shown; }, cmp: cmp };
+  X4.update = { load: load, run: run, watch: watch, handleBack: handleBack, isShown: function () { return shown; }, cmp: cmp, liteUrl: liteUrl };
 })();

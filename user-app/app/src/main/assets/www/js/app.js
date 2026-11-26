@@ -12,6 +12,7 @@
 
   /* ---------------------------------------------------------------- home background: video if present, else animated neon */
   function makeHomeBg() {
+    if (X4.perf.lite) return { setActive: function () {}, refresh: function () {} };   // LITE: plain static background (CSS), no video / canvas
     var v = X4.$('#bg-video'), c = X4.$('#bg-canvas'), g = c.getContext('2d');
     var videoOK = false, active = false, raf = 0, last = 0, W = 0, H = 0;
 
