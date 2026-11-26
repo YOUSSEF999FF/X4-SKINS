@@ -1,8 +1,8 @@
 {
   "v": 1,
-  "salt": "I7lpDypgi+Qgw2gKXkhTgg==",
+  "salt": "dJGskHNCbp2+6bSF4jl8zw==",
   "iter": 120000,
-  "hash": "8d3NSUtmEB3D+9c0GIhd+fWcpMvatix7TP/4cJuUDho=",
+  "hash": "7/+lg1eRRsHilFVHdG9TkSdvF2hcC8ZoimrbS9pA0BQ=",
   "getPass": {
     "label": "Get Pass",
     "url": ""

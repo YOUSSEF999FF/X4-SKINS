@@ -4,18 +4,36 @@
   "items": [
     {
       "id": "site-1",
-      "title": { "ar": "الموقع الرسمي", "en": "Official Website", "es": "Sitio oficial", "vi": "Trang chính thức", "hi": "आधिकारिक वेबसाइट", "pt": "Site oficial" },
+      "title": {
+        "ar": "الموقع الرسمي",
+        "en": "Official Website",
+        "es": "Sitio oficial",
+        "vi": "Trang chính thức",
+        "hi": "आधिकारिक वेबसाइट",
+        "pt": "Site oficial"
+      },
       "subtitle": "AHM X DOWNLOADER",
       "url": "https://ahm-x17.blogspot.com/?m=1",
       "view": 1
     },
     {
       "id": "site-2",
-      "title": { "ar": "رابط تجريبي (webview2)", "en": "Sample link (webview2)", "es": "Enlace de ejemplo (webview2)", "vi": "Liên kết mẫu (webview2)", "hi": "नमूना लिंक (webview2)", "pt": "Link de exemplo (webview2)" },
+      "title": {
+        "ar": "رابط تجريبي (webview2)",
+        "en": "Sample link (webview2)",
+        "es": "Enlace de ejemplo (webview2)",
+        "vi": "Liên kết mẫu (webview2)",
+        "hi": "नमूना लिंक (webview2)",
+        "pt": "Link de exemplo (webview2)"
+      },
       "subtitle": "example.org",
       "url": "https://example.org",
       "view": 2,
-      "allowed": ["example.org", "iana.org"]
+      "allowed": [
+        "example.org",
+        "iana.org"
+      ],
+      "enabled": false
     }
   ]
 }

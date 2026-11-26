@@ -1,4 +1,30 @@
 {
   "version": 1,
-  "items": []
+  "items": [
+    {
+      "id": "video-1",
+      "title": {
+        "ar": "",
+        "en": "",
+        "es": "",
+        "vi": "",
+        "hi": "",
+        "pt": ""
+      },
+      "label": {
+        "ar": "",
+        "en": "",
+        "es": "",
+        "vi": "",
+        "hi": "",
+        "pt": ""
+      },
+      "description": "",
+      "youtube": "",
+      "image": "",
+      "icon": "youtube",
+      "shape": "",
+      "enabled": false
+    }
+  ]
 }

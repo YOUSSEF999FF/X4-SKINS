@@ -36,7 +36,8 @@
       "url": "https://t.me/+2wBKle0hLMQ2ZWZk",
       "icon": "group",
       "image": "",
-      "shape": ""
+      "shape": "",
+      "enabled": false
     },
     {
       "id": "discord",

@@ -1,5 +1,5 @@
 {
-  "latestVersion": "1.0.0",
+  "latestVersion": "18.0.0",
   "force": false,
   "title": {
     "ar": "تحديث جديد متاح",
@@ -18,7 +18,14 @@
     "pt": "Há uma versão mais recente do app. Atualize agora para ter os recursos mais recentes."
   },
   "button": {
-    "label": { "ar": "تحديث الآن", "en": "Update now", "es": "Actualizar ahora", "vi": "Cập nhật ngay", "hi": "अभी अपडेट करें", "pt": "Atualizar agora" },
+    "label": {
+      "ar": "تحديث الآن",
+      "en": "Update now",
+      "es": "Actualizar ahora",
+      "vi": "Cập nhật ngay",
+      "hi": "अभी अपडेट करें",
+      "pt": "Atualizar agora"
+    },
     "url": ""
   }
 }
