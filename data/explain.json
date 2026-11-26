@@ -4,27 +4,194 @@
     {
       "id": "video-1",
       "title": {
-        "ar": "",
-        "en": "",
-        "es": "",
-        "vi": "",
-        "hi": "",
-        "pt": ""
+        "ar": "حل مشكلة عدم ظهور الإسكن / YOUSSEF 999",
+        "en": "Fix Skin Not Showing Issue / YOUSSEF 999",
+        "es": "Solución al problema de que no aparece la Skin / YOUSSEF 999",
+        "vi": "Khắc phục lỗi không hiện Skin / YOUSSEF 999",
+        "hi": "स्किन न दिखने की समस्या का समाधान / YOUSSEF 999",
+        "pt": "Como resolver o problema da Skin não aparecer / YOUSSEF 999"
       },
       "label": {
-        "ar": "",
-        "en": "",
-        "es": "",
-        "vi": "",
-        "hi": "",
-        "pt": ""
+        "ar": "اختفاء الاسكن",
+        "en": "Skin Bug",
+        "es": "​Error Skin",
+        "vi": "Lỗi Skin",
+        "hi": "​स्किन एरर",
+        "pt": "Erro Skin"
       },
-      "description": "",
-      "youtube": "",
+      "description": {
+        "ar": "بتواجه مشكلة إن السكنات مش بتظهر معاك في اللعبة بعد التفعيل؟ 😕 الفيديو ده هيحللك المشكلة دي نهائياً بخطوات بسيطة وسريعة! 👇🔥",
+        "en": "Facing the issue where skins don't show up in-game after applying them? 😕 This video will permanently fix the problem in simple, fast steps! 👇🔥",
+        "es": "¿Tienes el problema de que las skins no aparecen en el juego después de aplicarlas? 😕 ¡Este video solucionará el error por completo con pasos rápidos y sencillos! 👇🔥",
+        "vi": "Bạn đang gặp lỗi không hiện skin trong game sau khi cài đặt? 😕 Video này sẽ giúp bạn khắc phục triệt để lỗi này chỉ với vài bước đơn giản! 👇🔥",
+        "hi": "क्या स्किन अप्लाई करने के बाद भी गेम में दिखाई नहीं दे रही है? 😕 यह वीडियो आसान और तेज़ स्टेप्स में इस समस्या को हमेशा के लिए ठीक कर देगा! 👇🔥",
+        "pt": "Está com o problema da skin não aparecer no jogo depois de aplicar? 😕 Esse vídeo vai resolver esse erro de vez com passos simples e rápidos! 👇🔥"
+      },
+      "youtube": "https://youtu.be/zi5PffM4YD4?si=haFqCBj1hnn0P9M6",
       "image": "",
       "icon": "youtube",
-      "shape": "",
-      "enabled": false
+      "shape": "squircle",
+      "enabled": true
+    },
+    {
+      "id": "video-2",
+      "title": {
+        "ar": "حل مشكلة عدم ظهور تأثيرات الرقصة / YOUSSEF 999",
+        "en": "Fix Emote Effects Not Showing Issue / YOUSSEF 999",
+        "es": "Solución al problema de que no aparecen los efectos del Emote / YOUSSEF 999",
+        "vi": "Khắc phục lỗi không hiện hiệu ứng Hành Động / YOUSSEF 999",
+        "hi": "इमोट इफेक्ट्स न दिखने की समस्या का समाधान / YOUSSEF 999",
+        "pt": "Como resolver o problema dos efeitos do Emote não aparecerem / YOUSSEF 999"
+      },
+      "label": {
+        "ar": "تأثير الرقصة",
+        "en": "Emote FX",
+        "es": "Error Emote",
+        "vi": "Lỗi Emote",
+        "hi": "इमोट एरर",
+        "pt": "Erro Emote"
+      },
+      "description": {
+        "ar": "بتواجه مشكلة إن تأثيرات الرقصة مش بتظهر معاك في اللعبة بعد التفعيل؟ 😕 الفيديو ده هيحللك المشكلة دي نهائياً بخطوات بسيطة وسريعة! 👇🔥",
+        "en": "Facing the issue where emote effects don't show up in-game after applying them? 😕 This video will permanently fix the problem in simple, fast steps! 👇🔥",
+        "es": "¿Tienes el problema de que los efectos del emote no aparecen en el juego después de aplicarlos? 😕 ¡Este video solucionará el error por completo con pasos rápidos y sencillos! 👇🔥",
+        "vi": "Bạn đang gặp lỗi không hiện hiệu ứng hành động trong game sau khi cài đặt? 😕 Video này sẽ giúp bạn khắc phục triệt để lỗi này chỉ với vài bước đơn giản! 👇🔥",
+        "hi": "क्या इमोट अप्लाई करने के बाद भी गेम में उसके इफेक्ट्स दिखाई नहीं दे रहे हैं? 😕 यह वीडियो आसान और तेज़ स्टेप्स में इस समस्या को हमेशा के लिए ठीक कर देगा! 👇🔥",
+        "pt": "Está com o problema dos efeitos do emote não aparecerem no jogo depois de aplicar? 😕 Esse vídeo vai resolver esse erro de vez com passos simples e rápidos! 👇🔥"
+      },
+      "youtube": "https://youtu.be/-awlPzkdkXo?si=G3AVsEipTmlNOS6m",
+      "image": "",
+      "icon": "youtube",
+      "shape": "squircle",
+      "enabled": true
+    },
+    {
+      "id": "video-3",
+      "title": {
+        "ar": "طريقة إزالة أي قليتش / YOUSSEF 999",
+        "en": "How to Remove Any Glitch / YOUSSEF 999",
+        "es": "Cómo eliminar cualquier Glitch / YOUSSEF 999",
+        "vi": "Cách xóa mọi Glitch / YOUSSEF 999",
+        "hi": "किसी भी ग्लिच को कैसे हटाएं / YOUSSEF 999",
+        "pt": "Como remover qualquer Glitch / YOUSSEF 999"
+      },
+      "label": {
+        "ar": "إزالة القليتش",
+        "en": "Remove Glitch",
+        "es": "Quitar Glitch",
+        "vi": "Xóa Glitch",
+        "hi": "ग्लिच हटाएं",
+        "pt": "Remover Glitch"
+      },
+      "description": {
+        "ar": "عايز تمسح القليتشات وترجع اللعبة لوضعها الأصلي بدون أي مشاكل أو ملفات متبقية؟ 😕 الفيديو ده هيشرحلك طريقة إزالة أي قليتش نهائياً بخطوات بسيطة وسريعة! 👇🔥",
+        "en": "Want to remove active glitches and restore the game to its original state without leftover files? 😕 This video will show you how to permanently remove any glitch in simple, fast steps! 👇🔥",
+        "es": "¿Quieres eliminar los glitches y devolver el juego a su estado original sin errores? 😕 ¡Este video te mostrará cómo quitar cualquier glitch por completo con pasos rápidos y sencillos! 👇🔥",
+        "vi": "Bạn muốn xóa các bản glitch và đưa game về trạng thái gốc mà không bị lỗi? 😕 Video này sẽ hướng dẫn bạn cách xóa mọi glitch triệt để chỉ với vài bước đơn giản! 👇🔥",
+        "hi": "क्या आप ग्लिच हटाकर गेम को बिना किसी एरर के वापस पहले जैसा करना चाहते हैं? 😕 यह वीडियो आसान और तेज़ स्टेप्स में किसी भी ग्लिच को हमेशा के लिए हटाने का तरीका बताएगा! 👇🔥",
+        "pt": "Quer remover os glitches e voltar o jogo ao normal sem nenhum erro? 😕 Esse vídeo vai te ensinar como tirar qualquer glitch de vez com passos simples e rápidos! 👇🔥"
+      },
+      "youtube": "https://youtu.be/tUQd5ZP1huA?si=GqpfQ6VjeVsy5XGv",
+      "image": "",
+      "icon": "youtube",
+      "shape": "squircle",
+      "enabled": true
+    },
+    {
+      "id": "video-4",
+      "title": {
+        "ar": "حل مشكلة عدم ظهور ملفات الداتا / YOUSSEF 999",
+        "en": "Fix Data Files Not Showing Issue / YOUSSEF 999",
+        "es": "Solución al problema de que no aparecen los archivos Data / YOUSSEF 999",
+        "vi": "Khắc phục lỗi không hiện thư mục Data / YOUSSEF 999",
+        "hi": "डेटा फाइल्स न दिखने की समस्या का समाधान / YOUSSEF 999",
+        "pt": "Como resolver o problema dos arquivos Data não aparecerem / YOUSSEF 999"
+      },
+      "label": {
+        "ar": "مشكلة الداتا",
+        "en": "Missing Data",
+        "es": "Error Data",
+        "vi": "Lỗi Data",
+        "hi": "डेटा एरर",
+        "pt": "Erro Data"
+      },
+      "description": {
+        "ar": "بتواجه مشكلة إن ملفات الداتا مش بتظهر معاك في مدير الملفات؟ 😕 الفيديو ده هيحللك المشكلة دي نهائياً بخطوات بسيطة وسريعة! 👇🔥",
+        "en": "Facing the issue where Data files don't show up in your file manager? 😕 This video will permanently fix the problem in simple, fast steps! 👇🔥",
+        "es": "¿Tienes el problema de que los archivos Data no aparecen en tu gestor de archivos? 😕 ¡Este video solucionará el error por completo con pasos rápidos y sencillos! 👇🔥",
+        "vi": "Bạn đang gặp lỗi không hiện tệp Data trong trình quản lý tệp? 😕 Video này sẽ giúp bạn khắc phục triệt để lỗi này chỉ với vài bước đơn giản! 👇🔥",
+        "hi": "क्या आपके फाइल मैनेजर में Data फाइल्स दिखाई नहीं दे रही हैं? 😕 यह वीडियो आसान और तेज़ स्टेप्स में इस समस्या को हमेशा के लिए ठीक कर देगा! 👇🔥",
+        "pt": "Está com o problema dos arquivos Data não aparecerem no seu gerenciador de arquivos? 😕 Esse vídeo vai resolver esse erro de vez com passos simples e rápidos! 👇🔥"
+      },
+      "youtube": "https://youtu.be/Im1Y4nnPMeI?si=OVoP8gJpyAd_wLxT",
+      "image": "",
+      "icon": "youtube",
+      "shape": "squircle",
+      "enabled": true
+    },
+    {
+      "id": "video-5",
+      "title": {
+        "ar": "حل مشكلة اكتملت العملية مع وجود أخطاء / YOUSSEF 999",
+        "en": "Fix \"Operation Completed With Errors\" Issue / YOUSSEF 999",
+        "es": "Solución al error \"Operación completada con errores\" / YOUSSEF 999",
+        "vi": "Khắc phục lỗi \"Thao tác hoàn tất với lỗi\" / YOUSSEF 999",
+        "hi": "\"Operation completed with errors\" समस्या का समाधान / YOUSSEF 999",
+        "pt": "Como resolver o erro \"Operação concluída com erros\" / YOUSSEF 999"
+      },
+      "label": {
+        "ar": "خطأ التركيب",
+        "en": "Extract Error",
+        "es": "Error Archivo ",
+        "vi": "Lỗi Giải Nén",
+        "hi": "फाइल एरर",
+        "pt": "Erro Arquivo"
+      },
+      "description": {
+        "ar": "بتظهرلك رسالة \"اكتملت العملية مع وجود أخطاء\" أثناء تركيب الملفات أو فك الضغط؟ 😕 الفيديو ده هيحللك المشكلة دي نهائياً بخطوات بسيطة وسريعة! 👇🔥",
+        "en": "Getting the \"Operation completed with errors\" message when extracting or pasting files? 😕 This video will permanently fix the problem in simple, fast steps! 👇🔥",
+        "es": "¿Te aparece el mensaje \"Operación completada con errores\" al extraer o pegar archivos? 😕 ¡Este video solucionará el error por completo con pasos rápidos y sencillos! 👇🔥",
+        "vi": "Bạn gặp thông báo \"Thao tác hoàn tất với lỗi\" khi giải nén hoặc dán tệp? 😕 Video này sẽ giúp bạn khắc phục triệt để lỗi này chỉ với vài bước đơn giản! 👇🔥",
+        "hi": "क्या फाइल एक्सट्रैक्ट या पेस्ट करते समय \"Operation completed with errors\" लिखा आ रहा है? 😕 यह वीडियो आसान और तेज़ स्टेप्स में इस समस्या को हमेशा के लिए ठीक कर देगा! 👇🔥",
+        "pt": "Está aparecendo a mensagem \"Operação concluída com erros\" ao extrair ou colar arquivos? 😕 Esse vídeo vai resolver esse erro de vez com passos simples e rápidos! 👇🔥"
+      },
+      "youtube": "https://youtu.be/wuGeCqb26CE?si=y_50vl_OCflK1JyH",
+      "image": "",
+      "icon": "youtube",
+      "shape": "squircle",
+      "enabled": true
+    },
+    {
+      "id": "video-6",
+      "title": {
+        "ar": "طريقة تركيب القليتشات / YOUSSEF 999",
+        "en": "How to Install Glitches / YOUSSEF 999",
+        "es": "Cómo instalar los Glitches / YOUSSEF 999",
+        "vi": "Cách cài đặt Glitch / YOUSSEF 999",
+        "hi": "ग्लिच कैसे इंस्टॉल करें / YOUSSEF 999",
+        "pt": "Como instalar os Glitches / YOUSSEF 999"
+      },
+      "label": {
+        "ar": "طريقة التركيب",
+        "en": "Install Glitch",
+        "es": "Instalar Glitch",
+        "vi": "Cài Glitch",
+        "hi": "कैसे लगाएं",
+        "pt": "Como Instalar"
+      },
+      "description": {
+        "ar": "مش عارف إزاي تركب ملفات القليتشات وتفعل السكنات جوه اللعبة بطريقة صحيحة؟ 😕 الفيديو ده هيشرحلك طريقة التركيب خطوة بخطوة وبأسهل شكل! 👇🔥",
+        "en": "Not sure how to properly install glitch files and activate skins in the game? 😕 This video will guide you through the installation step-by-step in the easiest way! 👇🔥",
+        "es": "¿No sabes cómo instalar correctamente los archivos glitch y activar las skins en el juego? 😕 ¡Este video te explicará cómo hacerlo paso a paso de la forma más fácil! 👇🔥",
+        "vi": "Bạn chưa biết cách cài đặt tệp glitch và kích hoạt skin trong game đúng cách? 😕 Video này sẽ hướng dẫn bạn từng bước cài đặt cực kỳ đơn giản và nhanh chóng! 👇🔥",
+        "hi": "क्या आपको नहीं पता कि गेम में ग्लिच फाइल्स को सही तरीके से कैसे इंस्टॉल और एक्टिवेट करें? 😕 यह वीडियो आपको सबसे आसान तरीके से स्टेप-बाय-स्टेप इंस्टॉल करना सिखाएगा! 👇🔥\n",
+        "pt": "Não sabe como instalar corretamente os arquivos de glitch e ativar as skins no jogo? 😕 Esse vídeo vai te ensinar o passo a passo da instalação do jeito mais fácil! 👇🔥"
+      },
+      "youtube": "https://youtube.com/shorts/evdIMCrs-us?si=G1leH5NHsr3HTWxk",
+      "image": "",
+      "icon": "youtube",
+      "shape": "squircle",
+      "enabled": true
     }
   ]
 }
