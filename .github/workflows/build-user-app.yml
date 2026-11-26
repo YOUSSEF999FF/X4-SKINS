@@ -92,7 +92,8 @@ jobs:
           fi
           echo "KEYSTORE_PATH=$JKS" >> "$GITHUB_ENV"
 
-      - name: Build release APK
+      # Builds BOTH editions in one go: "full" (all effects) and "lite" (no effects, for weak phones).
+      - name: Build release APKs (full + lite)
         working-directory: user-app
         env:
           KEY_ALIAS: x4key
@@ -100,21 +101,37 @@ jobs:
           KEY_PASSWORD: ${{ secrets.SIGNING_PASSPHRASE }}
         run: gradle assembleRelease --no-daemon --stacktrace
 
-      - name: Collect APK
+      - name: Collect APKs
         run: |
           set -e
           mkdir -p out
-          cp user-app/app/build/outputs/apk/release/app-release.apk "out/X4-SKINS-18-MAX-v${VERSION_NAME}.apk"
-          cp user-app/app/build/outputs/apk/release/app-release.apk "out/X4-SKINS-18-MAX.apk"
+          FULL="$(find user-app/app/build/outputs/apk/full/release -name '*.apk' 2>/dev/null | head -n 1 || true)"
+          LITE="$(find user-app/app/build/outputs/apk/lite/release -name '*.apk' 2>/dev/null | head -n 1 || true)"
+          if [ -z "$FULL" ]; then
+            # project from before the LITE edition existed: one APK only
+            FULL="$(find user-app/app/build/outputs/apk/release -name '*.apk' 2>/dev/null | head -n 1 || true)"
+            [ -z "$FULL" ] || echo "::warning::old project layout (no LITE edition in this code yet) - publishing the normal APK only"
+          fi
+          [ -n "$FULL" ] || { echo "::error::no APK was produced"; find user-app/app/build/outputs -name '*.apk'; exit 1; }
+          cp "$FULL" "out/X4-SKINS-18-MAX-v${VERSION_NAME}.apk"
+          cp "$FULL" "out/X4-SKINS-18-MAX.apk"
           {
-            echo "### APK ready (v${VERSION_NAME})"
+            echo "### APKs ready (v${VERSION_NAME})"
             echo ""
-            echo "Download: https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/X4-SKINS-18-MAX.apk"
+            echo "Full (all effects): https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/X4-SKINS-18-MAX.apk"
           } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$LITE" ]; then
+            cp "$LITE" "out/X4-SKINS-18-MAX-LITE-v${VERSION_NAME}.apk"
+            cp "$LITE" "out/X4-SKINS-18-MAX-LITE.apk"
+            {
+              echo ""
+              echo "LITE (no effects, weak phones): https://github.com/${GITHUB_REPOSITORY}/releases/latest/download/X4-SKINS-18-MAX-LITE.apk"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
-          name: X4-SKINS-18-MAX-apk
+          name: X4-SKINS-18-MAX-apks
           path: out/*.apk
 
       - name: Publish GitHub Release
@@ -126,3 +143,5 @@ jobs:
           files: |
             out/X4-SKINS-18-MAX.apk
             out/X4-SKINS-18-MAX-v${{ env.VERSION_NAME }}.apk
+            out/X4-SKINS-18-MAX-LITE.apk
+            out/X4-SKINS-18-MAX-LITE-v${{ env.VERSION_NAME }}.apk
