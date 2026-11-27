@@ -23,8 +23,8 @@ button { font-family: inherit; }
 /* ------------------------------------------------------------ screens */
 .screen { position: absolute; inset: 0; display: none; overflow: hidden; background: var(--bg); }
 .screen.active { display: block; }
-.screen.entering { z-index: 2; }
-.screen.leaving { z-index: 1; }
+.screen.entering { z-index: 2; will-change: transform, opacity; }
+.screen.leaving { z-index: 1; will-change: transform, opacity; }
 
 /* static background for every page except page 2 */
 .screen.sub {
@@ -53,7 +53,7 @@ button { font-family: inherit; }
 #intro-logo {
   position: relative; display: inline-block; white-space: nowrap; visibility: hidden;
   font-family: 'Archivo Black', Impact, 'Arial Black', sans-serif; font-size: min(11vw, 44px); letter-spacing: .12em; line-height: 1.05; padding-left: .12em;
-  --glow: .25; --shine: -80; will-change: transform, opacity, filter;
+  --glow: .25; --shine: -80; will-change: transform, opacity;
 }
 #intro-logo span { display: block; }
 #intro-logo .l-back {
@@ -106,6 +106,20 @@ button { font-family: inherit; }
 @keyframes rip { from { transform: scale(0); opacity: .95; } to { transform: scale(20); opacity: 0; } }
 .fx-bolts { border-radius: 0; }
 @keyframes spin { to { --ang: 360deg; } }
+html:not(.lite) .btn-main::before, html:not(.lite) .link-btn::before, html:not(.lite) .info-card::before { content: none; }
+/* the turning neon ring (see pressable() in fx.js) — rotation = GPU-only */
+.x4ring { position: absolute; inset: 0; border-radius: inherit; padding: 1.6px; pointer-events: none; z-index: 3; overflow: hidden;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask-composite: exclude; }
+.x4ring b { position: absolute; left: 50%; top: 50%; width: 110%; aspect-ratio: 1; margin: -55% 0 0 -55%; will-change: transform; animation: x4rot 5.5s linear infinite;
+  background: conic-gradient(rgba(200, 240, 255, .98), rgba(30, 100, 255, .1) 22%, rgba(120, 210, 255, .95) 50%, rgba(30, 100, 255, .1) 74%, rgba(200, 240, 255, .98)); }
+.link-btn .x4ring, .info-card .x4ring { padding: 1.2px; }
+.link-btn .x4ring b, .info-card .x4ring b { animation-duration: 7s;
+  background: conic-gradient(rgba(200, 240, 255, .9), rgba(30, 100, 255, .08) 24%, rgba(120, 210, 255, .85) 52%, rgba(30, 100, 255, .08) 76%, rgba(200, 240, 255, .9)); }
+.btn-main.is-pressed .x4ring b { animation-duration: .9s; }
+.btn-main.is-pressed .x4ring { filter: brightness(1.7) saturate(1.3) hue-rotate(-14deg); }
+@keyframes x4rot { to { transform: rotate(360deg); } }
+/* a dialog is covering the page: the buttons behind it stand still (less to blur and repaint) */
+html.modal-open .actions .x4ring b { animation-play-state: paused; }
 @keyframes spin2 { to { transform: rotate(360deg); } }
 
 /* --- START : the big lit glass slab */
@@ -148,10 +162,9 @@ button { font-family: inherit; }
 .modal-backdrop { position: fixed; inset: 0; opacity: 0; transition: opacity .45s ease; background: radial-gradient(80% 60% at 50% 45%, rgba(10, 30, 80, .42), rgba(1, 3, 10, .84)); backdrop-filter: blur(12px) saturate(1.3); -webkit-backdrop-filter: blur(12px) saturate(1.3); }
 .modal.in .modal-backdrop { opacity: 1; }
 
-.panel { position: relative; width: min(100%, 364px); margin: auto; border-radius: 26px; will-change: transform, opacity, filter; transform-style: preserve-3d; }
+.panel { position: relative; width: min(100%, 364px); margin: auto; border-radius: 26px; will-change: transform, opacity; }
 .panel-glass { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none;
   background: linear-gradient(150deg, rgba(60, 90, 140, .42) 0%, rgba(14, 24, 48, .72) 46%, rgba(6, 12, 28, .84) 100%);
-  backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid rgba(150, 210, 255, .3);
   box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .26), inset 0 0 46px rgba(60, 140, 255, .1), 0 34px 80px rgba(0, 0, 0, .65), 0 0 70px rgba(40, 120, 255, .2); }
 .panel-glass::before { content: ''; position: absolute; left: -10%; top: -30%; width: 80%; height: 70%; background: radial-gradient(closest-side, rgba(200, 235, 255, .2), rgba(200, 235, 255, 0)); }
@@ -205,7 +218,7 @@ button { font-family: inherit; }
 .em-core svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(150, 220, 255, .95)); }
 
 /* ------------------------------------------------------------ page transition sweep + toast */
-#tx-sweep { position: fixed; inset: 0; z-index: 450; pointer-events: none; display: none; mix-blend-mode: screen;
+#tx-sweep { position: fixed; inset: 0; z-index: 450; pointer-events: none; display: none; will-change: transform, opacity;
   background: linear-gradient(100deg, transparent 38%, rgba(60, 150, 255, .18) 44%, rgba(170, 228, 255, .85) 50%, rgba(60, 150, 255, .18) 56%, transparent 62%); }
 #tx-sweep.on { display: block; }
 #toast { position: fixed; left: 50%; bottom: calc(40px + env(safe-area-inset-bottom)); z-index: 1100; max-width: 86vw; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 11px 20px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #eaf6ff; text-align: center; background: rgba(10, 20, 44, .86); border: 1px solid rgba(var(--neon), .5); box-shadow: 0 0 24px rgba(var(--neon), .3); backdrop-filter: blur(10px); transition: opacity .25s, transform .25s; }
@@ -257,10 +270,11 @@ html.site-on #screen-start { pointer-events: none; }
 #fab-max { position: fixed; left: 0; top: 0; width: 48px; height: 48px; border-radius: 50%; display: none; place-items: center; border: 1px solid rgba(var(--neon), .8); color: #fff; padding: 0; cursor: pointer; touch-action: none;
   background: radial-gradient(circle at 32% 24%, rgba(170, 225, 255, .5), rgba(20, 70, 190, .72) 70%);
   box-shadow: 0 0 20px rgba(var(--neon), .6), 0 8px 18px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .55);
-  animation: fabpulse 2.6s ease-in-out infinite; }
+  }
+#fab-max::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; pointer-events: none; box-shadow: 0 0 30px 4px rgba(var(--neon), .85); opacity: 0; animation: fabpulse 2.6s ease-in-out infinite; }
 #fab-max.show { display: grid; }
 #fab-max svg { width: 30px; height: 36px; pointer-events: none; filter: drop-shadow(0 0 5px rgba(190, 235, 255, .9)); }
-@keyframes fabpulse { 0%, 100% { box-shadow: 0 0 16px rgba(var(--neon), .5), 0 8px 18px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .55); } 50% { box-shadow: 0 0 30px rgba(var(--neon), .95), 0 8px 18px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .55); } }
+@keyframes fabpulse { 0%, 100% { opacity: 0; } 50% { opacity: .85; } }
 
 /* --- download dialog */
 .dl-panel { width: min(100%, 340px); }
@@ -365,6 +379,23 @@ html.site-on #screen-start { pointer-events: none; }
 .info-card .out { flex: none; width: 20px; height: 20px; color: rgba(200, 230, 255, .8); position: relative; z-index: 2; }
 [dir="rtl"] .info-card .out { transform: scaleX(-1); }
 
+
+/* ============================================================ quality tiers (perf.js): q2 full · q1 lighter · q0 lightest
+   Only phones that cannot keep up ever get q1/q0 — the watchdog in perf.js decides, and remembers. */
+html.q1 .back, html.q1 .skip, html.q1 .b-start, html.q1 .b-explain, html.q1 .b-info, html.q1 .modal-backdrop, html.q1 .em-frost, html.q1 .em-glass,
+html.q1 .dl-chip, html.q1 .ex-bar, html.q1 .info-card, html.q1 #fab-max,
+html.q0 .back, html.q0 .skip, html.q0 .b-start, html.q0 .b-explain, html.q0 .b-info, html.q0 .modal-backdrop, html.q0 .em-frost, html.q0 .em-glass,
+html.q0 .dl-chip, html.q0 .ex-bar, html.q0 .info-card, html.q0 #fab-max { backdrop-filter: none; -webkit-backdrop-filter: none; }
+/* without the blur behind them the glass needs a little more body to stay readable */
+html.q1 .modal-backdrop, html.q0 .modal-backdrop { background: radial-gradient(80% 60% at 50% 45%, rgba(10, 30, 80, .5), rgba(1, 3, 10, .9)); }
+html.q1 .b-explain, html.q0 .b-explain { background: linear-gradient(180deg, rgba(150, 190, 240, .26) 0%, rgba(60, 100, 170, .22) 48%, rgba(40, 90, 170, .3) 100%); }
+html.q1 .b-info, html.q0 .b-info { background: rgba(6, 14, 34, .8); }
+html.q1 .ex-bar, html.q0 .ex-bar { background: linear-gradient(180deg, rgba(120, 150, 200, .3), rgba(30, 50, 100, .5) 50%, rgba(40, 80, 160, .45)); }
+html.q1 .info-card, html.q0 .info-card { background: linear-gradient(180deg, rgba(90, 150, 230, .3) 0%, rgba(30, 90, 220, .24) 55%, rgba(10, 40, 130, .36) 100%); }
+/* lightest tier: the rings and the pulsing button stand still */
+html.q0 .x4ring b, html.q0 #fab-max::after { animation: none; }
+html.q0 .x4ring b { transform: rotate(35deg); }
+html.q0 .btn-main, html.q0 .link-btn, html.q0 .info-card, html.q0 .btn { will-change: auto; }
 
 /* ============================================================ LITE edition (html.lite) — NO visual effects
    Added by edition.js (src/lite). Everything below only applies to the LITE app; the normal app never has html.lite.

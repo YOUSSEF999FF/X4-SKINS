@@ -13,31 +13,51 @@
   /* ---------------------------------------------------------------- home background: video if present, else animated neon */
   function makeHomeBg() {
     if (X4.perf.lite) return { setActive: function () {}, refresh: function () {} };   // LITE: plain static background (CSS), no video / canvas
+    var P = X4.perf;
     var v = X4.$('#bg-video'), c = X4.$('#bg-canvas'), g = c.getContext('2d');
-    var videoOK = false, active = false, raf = 0, last = 0, W = 0, H = 0;
+    var videoOK = false, active = false, raf = 0, last = 0, W = 0, H = 0, S = 1, drawn = false;
 
     function size() {
-      var dpr = Math.min(X4.perf.dpr, 1.5);
+      S = P.bgScale;                                     // the background is soft: draw it smaller, the browser stretches it
       W = c.clientWidth; H = c.clientHeight;
-      c.width = Math.max(1, Math.round(W * dpr)); c.height = Math.max(1, Math.round(H * dpr));
-      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.width = Math.max(1, Math.round(W * S)); c.height = Math.max(1, Math.round(H * S));
+      g.setTransform(c.width / W, 0, 0, c.height / H, 0, 0);
+      drawn = false;
+    }
+    function paint(now) {
+      P.pulse(250);
+      X4.bgfx.draw(g, W, H, now / 1000, { density: 0.9, glow: 0.55, cx: W / 2, cy: H * 0.42, scale: S });
+      drawn = true;
+    }
+    /* how often the background is redrawn: full speed 30 fps; while a dialog sits on top of it (it is dimmed + blurred
+       there anyway) 12 fps; on a struggling phone 20 fps / frozen behind dialogs / one still picture */
+    function interval() {
+      if (P.min) return 0;
+      if (P.modals > 0) return P.low ? 0 : 80;
+      return P.low ? 50 : 33;
     }
     function loop(now) {
+      var iv = interval();
+      if (iv === 0) {                                    // still picture: paint once, then stop the loop completely
+        if (!drawn) paint(now);
+        raf = 0; return;
+      }
       raf = requestAnimationFrame(loop);
-      if (now - last < 33) return;                       // 30 fps is plenty for a background
+      if (now - last < iv - 2) return;
       last = now;
-      X4.bgfx.draw(g, W, H, now / 1000, { density: 0.9, glow: 0.55, cx: W / 2, cy: H * 0.42 });
+      paint(now);
     }
     function refresh() {
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(raf); raf = 0;
       if (!active || document.hidden) { try { v.pause(); } catch (e) {} return; }
       if (videoOK) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-      else { size(); raf = requestAnimationFrame(loop); }
+      else { if (c.width <= 1 || S !== P.bgScale) size(); raf = requestAnimationFrame(loop); }
     }
     v.addEventListener('canplay', function () { videoOK = true; v.classList.add('ready'); c.classList.add('hide'); refresh(); });
     v.addEventListener('error', function () { videoOK = false; v.classList.remove('ready'); c.classList.remove('hide'); refresh(); });
-    window.addEventListener('resize', function () { if (active && !videoOK) size(); });
+    window.addEventListener('resize', function () { if (active && !videoOK) { size(); refresh(); } });
     document.addEventListener('visibilitychange', refresh);
+    P.on(function (what) { if (active && !videoOK) { if (what === 'tier') S = 0; refresh(); } });   // tier or dialog state changed → pick the new rate / size
     v.src = 'assets/bg.mp4';                              // a missing file simply triggers the animated fallback
     return { setActive: function (a) { active = a; refresh(); }, refresh: refresh };
   }
@@ -164,6 +184,7 @@
     I.init();
     X4.router.init();
     homeBg = makeHomeBg();
+    X4.router.on('start', function (e) { if (e.from === 'home' && e.to !== 'home') homeBg.setActive(false); });   // the page is leaving: freeze the background right away
     X4.hit.init();
     X4.dl.init();
     X4.start.home = back;

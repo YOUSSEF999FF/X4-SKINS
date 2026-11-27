@@ -16,7 +16,7 @@
   var clamp = X4.clamp, ease = X4.ease, h01 = X4.h01;
 
   var root, bgC, fxC, bg, fx, logoPos, logo, flash, fade, skipBtn;
-  var W = 0, H = 0, cx = 0, cy = 0, dpr = 1;
+  var W = 0, H = 0, cx = 0, cy = 0, dpr = 1, bgS = 0.75, frameNo = 0, lastR = 0;
   var panelC, engC, glowC, cols = [], px = 0, py = 0, pw = 0, ph = 0, ready = false;
   var raf = 0, t0 = null, startAt = 0, skipOffset = 0, done = false, onDone = null, frames = [], sprite = null;
 
@@ -137,7 +137,9 @@
   function layout() {
     W = root.clientWidth; H = root.clientHeight; dpr = X4.perf.dpr;
     cx = W / 2; cy = H * 0.45;
-    [bgC, fxC].forEach(function (c) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); c.style.width = W + 'px'; c.style.height = H + 'px'; });
+    fxC.width = Math.round(W * dpr); fxC.height = Math.round(H * dpr); fxC.style.width = W + 'px'; fxC.style.height = H + 'px';
+    bgS = X4.perf.bgScale;                              // the soft background canvas is smaller than the screen and stretched
+    bgC.width = Math.round(W * bgS); bgC.height = Math.round(H * bgS); bgC.style.width = W + 'px'; bgC.style.height = H + 'px';
     bg = bgC.getContext('2d'); fx = fxC.getContext('2d');
     logoPos.style.top = cy + 'px';
     build();
@@ -173,7 +175,7 @@
     logo.style.visibility = o <= 0.002 ? 'hidden' : 'visible';
     logo.style.opacity = o.toFixed(3);
     logo.style.transform = 'translate3d(' + jx.toFixed(2) + 'px,' + jy.toFixed(2) + 'px,0) perspective(900px) rotateX(' + rx.toFixed(2) + 'deg) scale(' + s.toFixed(4) + ')';
-    logo.style.filter = blur > 0.3 ? 'blur(' + blur.toFixed(1) + 'px)' : 'none';
+    logo.style.filter = (blur > 0.3 && !X4.perf.low) ? 'blur(' + blur.toFixed(1) + 'px)' : 'none';
     logo.style.setProperty('--glow', glow.toFixed(3));
     logo.style.setProperty('--shine', shine.toFixed(1));
     return glow;
@@ -284,12 +286,15 @@
     return 0.95 * Math.pow(Math.max(0, 1 - dt / 0.5), 1.5);
   }
 
-  function render(t) {
+  function render(t, withBg) {
     if (!W) return;
-    bg.setTransform(dpr, 0, 0, dpr, 0, 0); fx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fx.setTransform(dpr, 0, 0, dpr, 0, 0);
     var g = logoState(t);
     var glowBg = t < T.glow ? 0.3 : clamp(g * 0.7, 0, 1.2);
-    X4.bgfx.draw(bg, W, H, t, { alpha: ease.outCubic(t / 0.9), glow: glowBg, cx: cx, cy: cy });
+    if (withBg !== false) {
+      bg.setTransform(bgC.width / W, 0, 0, bgC.height / H, 0, 0);
+      X4.bgfx.draw(bg, W, H, t, { alpha: ease.outCubic(t / 0.9), glow: glowBg, cx: cx, cy: cy, scale: bgS });
+    }
     fx.clearRect(0, 0, W, H);
     energy(t); explosion(t); engraving(t);
     flash.style.opacity = flashAlpha(t).toFixed(3);
@@ -300,12 +305,13 @@
   function frame(now) {
     raf = requestAnimationFrame(frame);
     if (t0 == null) t0 = now;
+    X4.perf.pulse(250);
     var t = tNow(now);
-    render(t);
-    if (!X4.perf.low && frames.length < 50 && t > 0.4) {                    // weak phone? lighten the effects
-      frames.push(now);
-      if (frames.length === 50 && (frames[49] - frames[0]) / 49 > 30) X4.perf.low = true;
-    }
+    frameNo++;
+    /* the cinematic is drawn at full rate on a healthy phone — except the background (soft, 30 fps is plenty);
+       lighter tiers draw everything at ~30 fps */
+    if (X4.perf.low) { if (now - lastR >= 30) { lastR = now; render(t, true); } }
+    else render(t, (frameNo & 1) === 0 || frameNo < 3);
     if (!done && t >= T.end) { done = true; if (onDone) onDone(); }
   }
 
@@ -319,7 +325,7 @@
     root = X4.$('#screen-intro');
     bgC = X4.$('#intro-bg'); fxC = X4.$('#intro-fx'); logoPos = X4.$('#intro-logo-pos'); logo = X4.$('#intro-logo');
     flash = X4.$('#intro-flash'); fade = X4.$('#intro-fade'); skipBtn = X4.$('#intro-skip');
-    startAt = o.startAt || 0; onDone = o.onDone || null; done = false; t0 = null; skipOffset = 0; frames = [];
+    startAt = o.startAt || 0; onDone = o.onDone || null; done = false; t0 = null; skipOffset = 0; frames = []; frameNo = 0; lastR = 0;
     var fonts = (document.fonts && document.fonts.load) ? Promise.race([document.fonts.load('400 40px "Archivo Black"'), X4.sleep(1500)]) : Promise.resolve();
     return fonts.then(function () {
       layout();

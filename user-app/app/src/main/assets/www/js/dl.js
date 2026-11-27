@@ -165,12 +165,12 @@
     var head = -Math.PI / 2 + (isInd ? spinA + 0.26 * Math.PI * 2 : p * Math.PI * 2), tail = head - Math.max(0.08, p * Math.PI * 2);
     var flick = 0.8 + 0.2 * Math.sin(t / 40);
     ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    ctx.shadowColor = 'rgba(80,190,255,1)'; ctx.shadowBlur = X4.perf.low ? 5 : 13;
+    X4.perf.pulse(150);
     var bolts = [], n = X4.perf.low ? 2 : 4;
     for (var k = 0; k < n; k++) bolts.push(arcBolt(tail + Math.random() * Math.max(0.05, head - tail - 0.3), 0.22 + Math.random() * 0.4, 9));
     if (boost) for (var j = 0; j < 7; j++) bolts.push(arcBolt(Math.random() * Math.PI * 2, 0.3 + Math.random() * 0.6, 14));
     bolts.forEach(function (b) {
-      ctx.strokeStyle = 'rgba(110,200,255,' + (0.8 * flick) + ')'; ctx.lineWidth = 2.4; X4.fx.strokePts(ctx, b);
+      X4.fx.glowPts(ctx, b, '110,200,255', 0.8 * flick, 2.4);
       ctx.strokeStyle = 'rgba(240,250,255,' + flick + ')'; ctx.lineWidth = 1; X4.fx.strokePts(ctx, b);
     });
     /* sparks leaping off the head of the ring (or all around it while celebrating) */
@@ -181,7 +181,7 @@
       var pts = X4.fx.bolt(x0, y0, x0 + Math.cos(a) * L * dir, y0 + Math.sin(a) * L * dir, 8, 3);
       ctx.strokeStyle = 'rgba(190,235,255,0.95)'; ctx.lineWidth = 1.3; X4.fx.strokePts(ctx, pts);
     }
-    ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+    ctx.globalCompositeOperation = 'source-over';
   }
 
   /* ---------------------------------------------------------------- dialog open / close */

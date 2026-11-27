@@ -231,6 +231,7 @@
       modal.setAttribute('aria-hidden', 'true');
       if (lb) { lb.stop(); lb = null; }
       modal.classList.remove('open', 'in');
+      X4.fx.modalOff(modal);                              // the page behind the list may animate again
     }
   }
 

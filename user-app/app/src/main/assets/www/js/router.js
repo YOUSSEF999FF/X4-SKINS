@@ -36,23 +36,26 @@
       return Promise.resolve(true);
     }
     busy = true;
-    var from = screens[cur], to = screens[name], low = X4.perf.low;
+    var from = screens[cur], to = screens[name];
     var rtl = document.documentElement.dir === 'rtl';
     var dir = (o.back ? -1 : 1) * (rtl ? -1 : 1);
+    R.emit('start', { from: cur, to: name });
+    X4.perf.pulse(1400);
     to.classList.add('active', 'entering');
     from.classList.add('leaving');
     var anims = [], fin = [];
     function an(el, kf, opt) { var a = el.animate(kf, opt); anims.push(a); fin.push(a.finished.catch(function () {})); }
-    var blur = function (px) { return low ? 'none' : 'blur(' + px + 'px)'; };
 
+    /* opacity + transform only: those run on the GPU compositor. (The old version also blurred the two whole screens
+       while they moved — the single most expensive thing in a page change, and nobody could see the difference.) */
     if (o.kind === 'fade') {
-      an(from, [{ opacity: 1, filter: 'none', transform: 'scale(1)' }, { opacity: 0, filter: blur(14), transform: 'scale(1.1)' }], { duration: 750, easing: 'ease-in', fill: 'forwards' });
-      an(to, [{ opacity: 0, filter: blur(14), transform: 'scale(.94)' }, { opacity: 1, filter: 'none', transform: 'scale(1)' }], { duration: 950, delay: 300, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+      an(from, [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(1.08)' }], { duration: 750, easing: 'ease-in', fill: 'forwards' });
+      an(to, [{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 950, delay: 300, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
       fin.push(sweep(1100, 1));
     } else {
-      an(from, [{ opacity: 1, filter: 'none', transform: 'translateX(0) scale(1)' }, { opacity: 0, filter: blur(10), transform: 'translateX(' + (-14 * dir) + '%) scale(.93)' }],
+      an(from, [{ opacity: 1, transform: 'translateX(0) scale(1)' }, { opacity: 0, transform: 'translateX(' + (-14 * dir) + '%) scale(.93)' }],
         { duration: 480, easing: 'cubic-bezier(.5,0,.8,.4)', fill: 'forwards' });
-      an(to, [{ opacity: 0, filter: blur(10), transform: 'translateX(' + (16 * dir) + '%) scale(1.06)' }, { opacity: 1, filter: 'none', transform: 'translateX(0) scale(1)' }],
+      an(to, [{ opacity: 0, transform: 'translateX(' + (16 * dir) + '%) scale(1.04)' }, { opacity: 1, transform: 'translateX(0) scale(1)' }],
         { duration: 640, delay: 170, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
       fin.push(sweep(760, dir));
     }

@@ -25,6 +25,19 @@
     ctx.stroke();
   }
 
+  /* Glow without shadowBlur (a Gaussian blur per stroke is what made the neon lines expensive):
+     the current path is stroked 3 times — wide faint, medium, thin bright — which reads as the same glow. */
+  function glowStrokes(ctx, rgb, a, w) {
+    if (!X4.perf.low) { ctx.lineWidth = w * 3.6; ctx.strokeStyle = 'rgba(' + rgb + ',' + (a * 0.13).toFixed(3) + ')'; ctx.stroke(); }
+    ctx.lineWidth = w * 1.9; ctx.strokeStyle = 'rgba(' + rgb + ',' + (a * 0.3).toFixed(3) + ')'; ctx.stroke();
+    ctx.lineWidth = w; ctx.strokeStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')'; ctx.stroke();
+  }
+  function glowPts(ctx, pts, rgb, a, w) {
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+    for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    glowStrokes(ctx, rgb, a, w);
+  }
+
   /* rounded-rect perimeter sampled every few px */
   function perimeter(pad, W, H, radius) {
     var pts = [], r = Math.min(radius, W / 2, H / 2), step = 9;
@@ -42,12 +55,12 @@
   function lightningBorder(host, o) {
     if (X4.perf.lite) return { stop: function () {}, resize: function () {} };      // LITE: no lightning
     o = o || {};
-    var pad = o.pad || 16, radius = o.radius || 22, color = o.color || '80,190,255', amp = o.amp || 2.2, fps = X4.perf.low ? 8 : (o.fps || 14);
+    var pad = o.pad || 16, radius = o.radius || 22, color = o.color || '80,190,255', amp = o.amp || 2.2, fps = X4.perf.low ? 8 : (o.fps || 12);
     var cv = document.createElement('canvas');
     cv.className = 'lb-canvas';
     cv.style.cssText = 'position:absolute;left:' + (-pad) + 'px;top:' + (-pad) + 'px;pointer-events:none;z-index:3;';
     host.appendChild(cv);
-    var ctx = cv.getContext('2d'), dpr = X4.perf.dpr, w = 0, h = 0, base = [], alive = true;
+    var ctx = cv.getContext('2d'), dpr = X4.perf.dpr, w = 0, h = 0, base = [], alive = true, still = false;
 
     function size() {
       w = host.offsetWidth + pad * 2; h = host.offsetHeight + pad * 2;
@@ -74,26 +87,21 @@
       if (host.offsetWidth + pad * 2 !== w || host.offsetHeight + pad * 2 !== h) size();
       ctx.clearRect(0, 0, w, h);
       var t = performance.now() / 1000;
-      var flick = 0.78 + 0.22 * Math.sin(t * 23) * Math.sin(t * 7.3);
+      var flick = X4.perf.min ? 0.9 : 0.78 + 0.22 * Math.sin(t * 23) * Math.sin(t * 7.3);
       ctx.lineJoin = 'round'; ctx.lineCap = 'round';
       ctx.globalCompositeOperation = 'lighter';
-      ctx.shadowColor = 'rgba(' + color + ',0.95)';
-      ctx.shadowBlur = (X4.perf.low ? 6 : 14) * flick;
-      ctx.strokeStyle = 'rgba(' + color + ',' + (0.55 * flick) + ')';
-      ctx.lineWidth = 2.2; path(amp * 1.6); ctx.stroke();
-      ctx.shadowBlur = X4.perf.low ? 3 : 6;
-      ctx.strokeStyle = 'rgba(215,242,255,' + (0.9 * flick) + ')';
-      ctx.lineWidth = 1; path(amp); ctx.stroke();
-      if (Math.random() < 0.2) {                       // an arc leaps outward
+      path(amp * 1.6); glowStrokes(ctx, color, 0.55 * flick, 2.2);
+      path(amp); glowStrokes(ctx, '215,242,255', 0.9 * flick, 1);
+      if (!X4.perf.min && Math.random() < 0.2) {       // an arc leaps outward
         var i = Math.floor(Math.random() * base.length), p = base[i];
         var dx = p[0] - w / 2, dy = p[1] - h / 2, l = Math.hypot(dx, dy) || 1, len = 8 + Math.random() * pad * 1.1;
-        ctx.shadowBlur = 10; ctx.strokeStyle = 'rgba(190,235,255,0.95)'; ctx.lineWidth = 1.3;
-        strokePts(ctx, bolt(p[0], p[1], p[0] + dx / l * len, p[1] + dy / l * len, 6, 3));
+        glowPts(ctx, bolt(p[0], p[1], p[0] + dx / l * len, p[1] + dy / l * len, 6, 3), '190,235,255', 0.95, 1.3);
       }
-      ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+      ctx.globalCompositeOperation = 'source-over';
     }
     var iv = setInterval(function () {
       if (!alive) return;
+      if (X4.perf.min) { if (!still) { still = true; if (host.isConnected) draw(); } return; }   // lightest tier: one still picture, no animation
       if (!document.hidden && host.isConnected && host.getClientRects().length) draw();
     }, 1000 / fps);
     draw();
@@ -118,6 +126,12 @@
     var rip = document.createElement('span');
     rip.className = 'fx-ripples';
     btn.appendChild(rip);
+    /* the turning neon ring around the big buttons / list items: a real element whose rotation runs on the GPU
+       (the old conic-gradient angle animation was repainted by the main thread on every frame, for every button) */
+    if (btn.classList.contains('btn-main') || btn.classList.contains('link-btn') || btn.classList.contains('info-card')) {
+      var ring = document.createElement('i'); ring.className = 'x4ring'; ring.setAttribute('aria-hidden', 'true');
+      ring.appendChild(document.createElement('b')); btn.appendChild(ring);
+    }
 
     function ensureCanvas() {
       if (cv) return;
@@ -153,12 +167,12 @@
         if (u >= 1) return;
         if (now - last > 55) { make(); last = now; }
         ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        ctx.shadowColor = 'rgba(80,190,255,1)'; ctx.shadowBlur = X4.perf.low ? 4 : 12;
         for (var b = 0; b < bolts.length; b++) {
-          ctx.strokeStyle = 'rgba(120,205,255,' + (0.9 * (1 - u)) + ')'; ctx.lineWidth = 2.4; strokePts(ctx, bolts[b]);
+          glowPts(ctx, bolts[b], '120,205,255', 0.9 * (1 - u), 2.4);
           ctx.strokeStyle = 'rgba(235,248,255,' + (1 - u) + ')'; ctx.lineWidth = 1; strokePts(ctx, bolts[b]);
         }
-        ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+        ctx.globalCompositeOperation = 'source-over';
+        X4.perf.pulse(120);
         raf = requestAnimationFrame(frame);
       })(t0);
     }
@@ -196,7 +210,7 @@
       return Promise.resolve();
     }
     var r = el.getBoundingClientRect(), pad = 36, W = r.width + pad * 2, H = r.height + pad * 2;
-    var cv = document.createElement('canvas'), dpr = X4.perf.low ? 1 : X4.perf.dpr;
+    var cv = document.createElement('canvas'), dpr = X4.perf.dpr;
     cv.width = Math.max(1, Math.round(W * dpr)); cv.height = Math.max(1, Math.round(H * dpr));
     cv.style.cssText = 'position:fixed;left:' + (r.left - pad) + 'px;top:' + (r.top - pad) + 'px;width:' + W + 'px;height:' + H + 'px;pointer-events:none;z-index:' + (o.z || 900) + ';';
     document.body.appendChild(cv);
@@ -229,12 +243,12 @@
         if (now - last > 48) { make(); last = now; }
         var amp = Math.sin(Math.PI * Math.min(1, u * 1.15));
         ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        ctx.shadowColor = 'rgba(80,190,255,1)'; ctx.shadowBlur = X4.perf.low ? 5 : 14;
         for (var i = 0; i < bolts.length; i++) {
-          ctx.strokeStyle = 'rgba(110,200,255,' + (0.85 * amp) + ')'; ctx.lineWidth = 2.6; strokePts(ctx, bolts[i]);
+          glowPts(ctx, bolts[i], '110,200,255', 0.85 * amp, 2.6);
           ctx.strokeStyle = 'rgba(240,250,255,' + amp + ')'; ctx.lineWidth = 1.1; strokePts(ctx, bolts[i]);
         }
-        ctx.globalCompositeOperation = 'source-over'; ctx.shadowBlur = 0;
+        ctx.globalCompositeOperation = 'source-over';
+        X4.perf.pulse(120);
         if (u < 1) raf = requestAnimationFrame(frame); else res();
       })(t0);
     });
@@ -248,9 +262,15 @@
   /* ---------------------------------------------------------------- cinematic dialog in / out */
   function hitRefresh() { if (X4.hit) X4.hit.refresh(); }
 
+  /* a dialog on top makes the page behind it rest (the background redraws slowly or not at all while it is covered) */
+  function modalOn(modal) { if (!modal.__x4open) { modal.__x4open = true; X4.perf.modal(1); } }
+  function modalOff(modal) { if (modal.__x4open) { modal.__x4open = false; X4.perf.modal(-1); } }
+
   function dialogIn(modal, panel) {
     modal.classList.add('open');
     modal.classList.add('in');
+    modalOn(modal);
+    X4.perf.pulse(1300);
     hitRefresh();
     if (X4.perf.lite) return Promise.resolve();        // LITE: appears instantly
     var a = panel.animate([
@@ -270,6 +290,7 @@
       modal.classList.remove('in'); modal.classList.remove('open'); hitRefresh();
       return Promise.resolve();
     }
+    X4.perf.pulse(800);
     var a = panel.animate([
       { transform: 'perspective(900px) translateZ(0) scale(1)', opacity: 1, filter: 'blur(0) brightness(1)' },
       { transform: 'perspective(900px) translateZ(60px) scale(1.04)', opacity: 1, filter: 'blur(0) brightness(1.8)', offset: 0.3 },
@@ -278,6 +299,7 @@
     modal.classList.remove('in');
     return a.finished.catch(function () {}).then(function () {
       modal.classList.remove('open');
+      modalOff(modal);
       try { a.cancel(); } catch (e) {}
       hitRefresh();
     });
@@ -287,8 +309,8 @@
   function dialogZap(modal, panel) {
     modal.classList.remove('in');
     if (X4.perf.lite) { modal.classList.remove('open'); hitRefresh(); return Promise.resolve(); }
-    return zap(panel, { radius: 26, hide: function () { modal.classList.remove('open'); } }).then(hitRefresh);
+    return zap(panel, { radius: 26, hide: function () { modal.classList.remove('open'); modalOff(modal); } }).then(hitRefresh);
   }
 
-  X4.fx = { dialogZap: dialogZap, bolt: bolt, strokePts: strokePts, perimeter: perimeter, lightningBorder: lightningBorder, pressable: pressable, zap: zap, dialogIn: dialogIn, dialogOut: dialogOut };
+  X4.fx = { modalOff: modalOff, dialogZap: dialogZap, bolt: bolt, strokePts: strokePts, glowPts: glowPts, perimeter: perimeter, lightningBorder: lightningBorder, pressable: pressable, zap: zap, dialogIn: dialogIn, dialogOut: dialogOut };
 })();
